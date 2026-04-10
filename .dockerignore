@@ -1,0 +1,36 @@
+# Build artifacts
+/_build/
+/cover/
+/deps/
+/doc/
+
+# SQLite database files
+*.db
+*.db-shm
+*.db-wal
+
+# Static assets compiled by esbuild/tailwind
+/priv/static/assets/
+
+# Node modules
+/assets/node_modules/
+
+# Elixir compiled files
+*.ez
+*.beam
+
+# Version control
+.git/
+
+# IDE / editor files
+.elixir_ls/
+.vscode/
+
+# OS files
+.DS_Store
+
+# Docker files (not needed inside the image)
+.dockerignore
+
+# Secrets
+/config/*.secret.exs
