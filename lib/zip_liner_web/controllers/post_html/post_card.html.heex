@@ -1,0 +1,78 @@
+<article class="post-card" id={"post-#{@post.id}"}>
+  <header class="post-header">
+    <img src={@post.author.github_avatar_url} alt={@post.author.display_name} class="avatar-sm" />
+    <div class="post-meta">
+      <a href={~p"/members/#{@post.author.id}"}><strong><%= @post.author.display_name %></strong></a>
+      <span class="post-type-badge"><%= @post.type %></span>
+      <time datetime={DateTime.to_iso8601(@post.inserted_at)}>
+        <%= Calendar.strftime(@post.inserted_at, "%b %d, %Y") %>
+      </time>
+    </div>
+  </header>
+  <div class="post-content">
+    <p><%= @post.content %></p>
+  </div>
+  <footer class="post-footer">
+    <button
+      class="react-btn"
+      hx-post={~p"/posts/#{@post.id}/react"}
+      hx-vals='{"kind": "thumbs_up"}'
+      hx-target={"#post-#{@post.id}"}
+      hx-swap="outerHTML"
+      hx-headers={Jason.encode!(%{"x-csrf-token" => get_csrf_token()})}
+    >
+      👍
+    </button>
+    <button
+      class="react-btn"
+      hx-post={~p"/posts/#{@post.id}/react"}
+      hx-vals='{"kind": "fire"}'
+      hx-target={"#post-#{@post.id}"}
+      hx-swap="outerHTML"
+      hx-headers={Jason.encode!(%{"x-csrf-token" => get_csrf_token()})}
+    >
+      🔥
+    </button>
+    <button
+      class="react-btn"
+      hx-post={~p"/posts/#{@post.id}/react"}
+      hx-vals='{"kind": "lightbulb"}'
+      hx-target={"#post-#{@post.id}"}
+      hx-swap="outerHTML"
+      hx-headers={Jason.encode!(%{"x-csrf-token" => get_csrf_token()})}
+    >
+      💡
+    </button>
+    <button
+      class="react-btn"
+      hx-post={~p"/posts/#{@post.id}/react"}
+      hx-vals='{"kind": "celebrate"}'
+      hx-target={"#post-#{@post.id}"}
+      hx-swap="outerHTML"
+      hx-headers={Jason.encode!(%{"x-csrf-token" => get_csrf_token()})}
+    >
+      🎉
+    </button>
+    <a
+      class="btn btn-sm"
+      hx-get={~p"/posts/#{@post.id}"}
+      hx-target={"#post-#{@post.id}-replies"}
+      hx-swap="innerHTML"
+    >
+      Reply
+    </a>
+    <%= if @current_member.id == @post.author_id do %>
+      <button
+        class="btn btn-sm btn-danger"
+        hx-delete={~p"/posts/#{@post.id}"}
+        hx-target={"#post-#{@post.id}"}
+        hx-swap="outerHTML"
+        hx-confirm="Delete this post?"
+        hx-headers={Jason.encode!(%{"x-csrf-token" => get_csrf_token()})}
+      >
+        Delete
+      </button>
+    <% end %>
+  </footer>
+  <div id={"post-#{@post.id}-replies"}></div>
+</article>

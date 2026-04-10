@@ -1,0 +1,33 @@
+<h1>Members (Admin)</h1>
+
+<table class="admin-table">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>GitHub</th>
+      <th>Role</th>
+      <th>Status</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    <%= for member <- @members do %>
+      <tr>
+        <td><a href={~p"/admin/members/#{member.id}"}><%= member.display_name %></a></td>
+        <td>@<%= member.github_username %></td>
+        <td><%= member.role %></td>
+        <td><%= member.status %></td>
+        <td>
+          <a href={~p"/admin/members/#{member.id}/edit"}>Edit</a>
+          <form method="post" action={~p"/admin/members/#{member.id}"} style="display:inline">
+            <input type="hidden" name="_csrf_token" value={get_csrf_token()} />
+            <input type="hidden" name="_method" value="delete" />
+            <button type="submit" onclick="return confirm('Deprovision this member?')" class="btn-link-danger">
+              Deprovision
+            </button>
+          </form>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

@@ -1,0 +1,36 @@
+<div class="page-header">
+  <h1>Members</h1>
+  <form
+    method="get"
+    action={~p"/members"}
+    hx-get={~p"/members"}
+    hx-target="#members-list"
+    hx-swap="innerHTML"
+  >
+    <select name="cohort_id" hx-trigger="change" hx-get={~p"/members"} hx-target="#members-list">
+      <option value="">All Cohorts</option>
+      <%= for cohort <- @cohorts do %>
+        <option value={cohort.id}><%= cohort.name %></option>
+      <% end %>
+    </select>
+    <button type="submit" class="btn btn-secondary">Filter</button>
+  </form>
+</div>
+
+<div id="members-list" class="members-grid">
+  <%= for member <- @members do %>
+    <a href={~p"/members/#{member.id}"} class="member-card">
+      <img src={member.github_avatar_url} alt={member.display_name} class="avatar" />
+      <div class="member-info">
+        <h3><%= member.display_name %></h3>
+        <p class="github-username">@<%= member.github_username %></p>
+        <%= if member.current_title do %>
+          <p class="member-title"><%= member.current_title %></p>
+        <% end %>
+        <%= if member.open_to_opportunities do %>
+          <span class="badge badge-opportunity">Open to opportunities</span>
+        <% end %>
+      </div>
+    </a>
+  <% end %>
+</div>

@@ -1,0 +1,13 @@
+<h1>Member: <%= @member.display_name %></h1>
+
+<dl>
+  <dt>GitHub</dt>
+  <dd><a href={"https://github.com/#{@member.github_username}"}>@<%= @member.github_username %></a></dd>
+  <dt>Role</dt>
+  <dd><%= @member.role %></dd>
+  <dt>Status</dt>
+  <dd><%= @member.status %></dd>
+</dl>
+
+<a href={~p"/admin/members/#{@member.id}/edit"} class="btn btn-secondary">Edit</a>
+<a href={~p"/admin/members"} class="btn btn-link">Back</a>

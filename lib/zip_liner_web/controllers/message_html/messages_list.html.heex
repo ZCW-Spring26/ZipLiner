@@ -1,0 +1,8 @@
+<%= for message <- @messages do %>
+  <div class={"message #{if message.sender_id == @current_member.id, do: "message-sent", else: "message-received"}"}>
+    <p><%= message.content %></p>
+    <time datetime={DateTime.to_iso8601(message.inserted_at)}>
+      <%= Calendar.strftime(message.inserted_at, "%b %d, %H:%M") %>
+    </time>
+  </div>
+<% end %>

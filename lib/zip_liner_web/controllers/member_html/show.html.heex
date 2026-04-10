@@ -1,0 +1,76 @@
+<div class="profile-layout">
+  <aside class="profile-sidebar">
+    <img src={@member.github_avatar_url} alt={@member.display_name} class="avatar-lg" />
+
+    <h1><%= @member.display_name %></h1>
+    <p class="github-link">
+      <a href={"https://github.com/#{@member.github_username}"} target="_blank" rel="noopener noreferrer">
+        @<%= @member.github_username %>
+      </a>
+    </p>
+
+    <%= if @member.current_title do %>
+      <p class="profile-title"><%= @member.current_title %></p>
+    <% end %>
+    <%= if @member.employer do %>
+      <p class="profile-employer"><%= @member.employer %></p>
+    <% end %>
+    <%= if @member.location do %>
+      <p class="profile-location">📍 <%= @member.location %></p>
+    <% end %>
+    <%= if @member.bio do %>
+      <p class="profile-bio"><%= @member.bio %></p>
+    <% end %>
+
+    <%= if @member.open_to_opportunities do %>
+      <span class="badge badge-opportunity">Open to opportunities</span>
+    <% end %>
+
+    <%= if @member.linkedin_url do %>
+      <a href={@member.linkedin_url} target="_blank" rel="noopener noreferrer" class="btn btn-linkedin">
+        View LinkedIn Profile
+      </a>
+    <% end %>
+
+    <%= if @member.skills != [] do %>
+      <div class="skills-list">
+        <%= for skill <- @member.skills do %>
+          <span class="skill-tag"><%= skill %></span>
+        <% end %>
+      </div>
+    <% end %>
+
+    <%= if @current_member.id != @member.id do %>
+      <div class="connection-actions">
+        <%= if @is_connected do %>
+          <span class="badge badge-connected">1st degree connection</span>
+        <% else %>
+          <%= if @pending_connection do %>
+            <%= if @pending_connection.member_id_b == @current_member.id do %>
+              <form method="post" action={~p"/members/#{@member.id}/accept_connection"}>
+                <input type="hidden" name="_csrf_token" value={get_csrf_token()} />
+                <button type="submit" class="btn btn-primary">Accept Connection</button>
+              </form>
+            <% else %>
+              <span class="badge badge-pending">Connection request sent</span>
+            <% end %>
+          <% else %>
+            <form method="post" action={~p"/members/#{@member.id}/connect"}>
+              <input type="hidden" name="_csrf_token" value={get_csrf_token()} />
+              <button type="submit" class="btn btn-primary">Connect</button>
+            </form>
+          <% end %>
+        <% end %>
+      </div>
+    <% else %>
+      <a href={~p"/members/#{@member.id}/edit"} class="btn btn-secondary">Edit Profile</a>
+    <% end %>
+  </aside>
+
+  <main class="profile-main">
+    <section class="profile-projects">
+      <h2>Projects</h2>
+      <a href={~p"/projects?owner_id=#{@member.id}"} class="btn btn-sm">View Projects</a>
+    </section>
+  </main>
+</div>

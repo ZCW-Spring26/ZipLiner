@@ -1,0 +1,59 @@
+<h1>Edit Profile</h1>
+
+<form method="post" action={~p"/members/#{@member.id}"}>
+  <input type="hidden" name="_csrf_token" value={get_csrf_token()} />
+  <input type="hidden" name="_method" value="put" />
+
+  <div class="form-group">
+    <label for="member_display_name">Display Name</label>
+    <input
+      type="text"
+      id="member_display_name"
+      name="member[display_name]"
+      value={@member.display_name}
+      maxlength="100"
+      required
+    />
+  </div>
+
+  <div class="form-group">
+    <label for="member_bio">Bio (280 chars max)</label>
+    <textarea id="member_bio" name="member[bio]" maxlength="280" rows="3"><%= @member.bio %></textarea>
+  </div>
+
+  <div class="form-group">
+    <label for="member_current_title">Current Title</label>
+    <input type="text" id="member_current_title" name="member[current_title]" value={@member.current_title} />
+  </div>
+
+  <div class="form-group">
+    <label for="member_employer">Employer / Company</label>
+    <input type="text" id="member_employer" name="member[employer]" value={@member.employer} />
+  </div>
+
+  <div class="form-group">
+    <label for="member_location">Location (City)</label>
+    <input type="text" id="member_location" name="member[location]" value={@member.location} />
+  </div>
+
+  <div class="form-group">
+    <label for="member_linkedin_url">LinkedIn URL</label>
+    <input type="url" id="member_linkedin_url" name="member[linkedin_url]" value={@member.linkedin_url} />
+  </div>
+
+  <div class="form-group checkbox">
+    <input
+      type="checkbox"
+      id="member_open_to_opportunities"
+      name="member[open_to_opportunities]"
+      value="true"
+      checked={@member.open_to_opportunities}
+    />
+    <label for="member_open_to_opportunities">Open to opportunities</label>
+  </div>
+
+  <div class="form-actions">
+    <button type="submit" class="btn btn-primary">Save Changes</button>
+    <a href={~p"/members/#{@member.id}"} class="btn btn-secondary">Cancel</a>
+  </div>
+</form>

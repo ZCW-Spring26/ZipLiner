@@ -1,0 +1,25 @@
+<h1>Cohorts</h1>
+<a href={~p"/admin/cohorts/new"} class="btn btn-primary">New Cohort</a>
+
+<table class="admin-table">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Start Date</th>
+      <th>Graduation Date</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    <%= for cohort <- @cohorts do %>
+      <tr>
+        <td><a href={~p"/admin/cohorts/#{cohort.id}"}><%= cohort.name %></a></td>
+        <td><%= cohort.start_date %></td>
+        <td><%= cohort.graduation_date %></td>
+        <td>
+          <a href={~p"/admin/cohorts/#{cohort.id}/edit"}>Edit</a>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

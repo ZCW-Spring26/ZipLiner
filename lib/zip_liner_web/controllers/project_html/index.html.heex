@@ -1,0 +1,22 @@
+<div class="page-header">
+  <h1>Projects</h1>
+  <a href={~p"/projects/new"} class="btn btn-primary">New Project</a>
+</div>
+
+<div class="projects-grid">
+  <%= for project <- @projects do %>
+    <a href={~p"/projects/#{project.id}"} class="project-card">
+      <h3><%= project.name %></h3>
+      <%= if project.tagline do %>
+        <p class="project-tagline"><%= project.tagline %></p>
+      <% end %>
+      <span class={"status-badge status-#{project.status}"}><%= project.status %></span>
+      <div class="tech-stack">
+        <%= for tag <- project.tech_stack do %>
+          <span class="tech-tag"><%= tag %></span>
+        <% end %>
+      </div>
+      <p class="project-author">by <%= project.owner.display_name %></p>
+    </a>
+  <% end %>
+</div>

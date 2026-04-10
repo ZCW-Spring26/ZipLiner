@@ -1,0 +1,25 @@
+<div class="channel-header">
+  <h1>#<%= @channel.name %></h1>
+  <%= if @channel.description do %>
+    <p><%= @channel.description %></p>
+  <% end %>
+</div>
+
+<div id="channel-posts" class="posts-list">
+  <%= for post <- @posts do %>
+    <article class="post-card" id={"post-#{post.id}"}>
+      <header class="post-header">
+        <img src={post.author.github_avatar_url} alt={post.author.display_name} class="avatar-sm" />
+        <div class="post-meta">
+          <a href={~p"/members/#{post.author.id}"}><strong><%= post.author.display_name %></strong></a>
+          <time datetime={DateTime.to_iso8601(post.inserted_at)}>
+            <%= Calendar.strftime(post.inserted_at, "%b %d, %Y") %>
+          </time>
+        </div>
+      </header>
+      <div class="post-content">
+        <p><%= post.content %></p>
+      </div>
+    </article>
+  <% end %>
+</div>
