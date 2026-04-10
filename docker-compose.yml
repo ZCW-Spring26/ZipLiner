@@ -1,0 +1,18 @@
+services:
+  app:
+    build: .
+    ports:
+      - "${PORT:-4000}:4000"
+    environment:
+      SECRET_KEY_BASE: ${SECRET_KEY_BASE}
+      GITHUB_CLIENT_ID: ${GITHUB_CLIENT_ID}
+      GITHUB_CLIENT_SECRET: ${GITHUB_CLIENT_SECRET}
+      PHX_HOST: ${PHX_HOST:-localhost}
+      PORT: 4000
+      DATABASE_PATH: /data/zipliner_prod.db
+    volumes:
+      - zipliner_data:/data
+    restart: unless-stopped
+
+volumes:
+  zipliner_data:

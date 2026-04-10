@@ -90,6 +90,46 @@ lib/
 mix test
 ```
 
+## Docker
+
+### Quick start with Docker Compose
+
+```bash
+# Copy the example env file and fill in your credentials
+cp .env.example .env
+# Edit .env with your values, then:
+docker compose up --build
+```
+
+The SQLite database is stored in a named Docker volume (`zipliner_data`) and is
+automatically preserved across container restarts and re-builds.
+
+Database migrations run automatically every time the container starts.
+
+### Required environment variables
+
+| Variable | Description |
+|---|---|
+| `SECRET_KEY_BASE` | 64-byte secret — generate with `mix phx.gen.secret` |
+| `GITHUB_CLIENT_ID` | GitHub OAuth App client ID |
+| `GITHUB_CLIENT_SECRET` | GitHub OAuth App client secret |
+| `PHX_HOST` | Public hostname (default: `localhost`) |
+| `PORT` | Port to expose on the host (default: `4000`) |
+
+### Building the image manually
+
+```bash
+docker build -t zipliner .
+docker run -d \
+  -p 4000:4000 \
+  -v zipliner_data:/data \
+  -e SECRET_KEY_BASE=<secret> \
+  -e GITHUB_CLIENT_ID=<id> \
+  -e GITHUB_CLIENT_SECRET=<secret> \
+  -e PHX_HOST=<hostname> \
+  zipliner
+```
+
 ## Production Deployment
 
 ```bash
