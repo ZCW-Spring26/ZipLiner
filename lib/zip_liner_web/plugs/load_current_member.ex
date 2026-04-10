@@ -14,8 +14,8 @@ defmodule ZipLinerWeb.Plugs.LoadCurrentMember do
         assign(conn, :current_member, nil)
 
       member_id ->
-        case Accounts.get_member!(member_id) do
-          member -> assign(conn, :current_member, member)
+        try do
+          assign(conn, :current_member, Accounts.get_member!(member_id))
         rescue
           Ecto.NoResultsError ->
             conn
