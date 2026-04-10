@@ -1,0 +1,447 @@
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
+
+/* =========================================================
+   ZipLiner — Application Styles
+   ========================================================= */
+
+/* --- Layout ------------------------------------------------ */
+.site-header {
+  @apply border-b border-gray-200 bg-white shadow-sm;
+}
+
+.nav-bar {
+  @apply mx-auto flex max-w-7xl items-center justify-between px-4 py-3;
+}
+
+.nav-brand {
+  @apply text-xl font-bold text-indigo-600 no-underline;
+}
+
+.brand-name {
+  @apply font-extrabold tracking-tight;
+}
+
+.nav-links {
+  @apply flex items-center gap-4;
+}
+
+.nav-user {
+  @apply flex items-center gap-2;
+}
+
+.main-content {
+  @apply mx-auto max-w-7xl px-4 py-6;
+}
+
+/* --- Buttons ----------------------------------------------- */
+.btn {
+  @apply inline-flex cursor-pointer items-center rounded-md px-4 py-2 text-sm font-semibold no-underline transition-colors;
+}
+
+.btn-primary {
+  @apply bg-indigo-600 text-white hover:bg-indigo-700;
+}
+
+.btn-secondary {
+  @apply border border-gray-300 bg-white text-gray-700 hover:bg-gray-50;
+}
+
+.btn-danger {
+  @apply bg-red-600 text-white hover:bg-red-700;
+}
+
+.btn-github {
+  @apply flex items-center gap-2 bg-gray-900 text-white hover:bg-gray-800;
+}
+
+.btn-linkedin {
+  @apply bg-blue-700 text-white hover:bg-blue-800;
+}
+
+.btn-link {
+  @apply cursor-pointer border-none bg-transparent text-indigo-600 underline;
+}
+
+.btn-sm {
+  @apply px-2 py-1 text-xs;
+}
+
+/* --- Avatars ----------------------------------------------- */
+.avatar-xs {
+  @apply h-6 w-6 rounded-full object-cover;
+}
+
+.avatar-sm {
+  @apply h-8 w-8 rounded-full object-cover;
+}
+
+.avatar {
+  @apply h-12 w-12 rounded-full object-cover;
+}
+
+.avatar-lg {
+  @apply h-24 w-24 rounded-full object-cover;
+}
+
+/* --- Flash messages --------------------------------------- */
+.flash-messages {
+  @apply mb-4 space-y-2;
+}
+
+.flash {
+  @apply flex items-start justify-between rounded-md px-4 py-3 text-sm;
+}
+
+.flash-info {
+  @apply bg-blue-50 text-blue-800;
+}
+
+.flash-error {
+  @apply bg-red-50 text-red-800;
+}
+
+.flash-close {
+  @apply ml-4 cursor-pointer border-none bg-transparent text-lg font-bold leading-none;
+}
+
+/* --- Hero (landing page) ---------------------------------- */
+.hero {
+  @apply flex min-h-[60vh] items-center justify-center;
+}
+
+.hero-content {
+  @apply text-center;
+}
+
+.hero-content h1 {
+  @apply mb-2 text-4xl font-extrabold text-gray-900;
+}
+
+.tagline {
+  @apply mb-8 text-xl text-gray-500;
+}
+
+.auth-cta {
+  @apply mb-4 flex justify-center;
+}
+
+.icon-github {
+  @apply h-5 w-5 fill-current;
+}
+
+.eligibility-note {
+  @apply text-sm text-gray-400;
+}
+
+/* --- Feed layout ------------------------------------------ */
+.feed-layout {
+  @apply flex gap-6;
+}
+
+.sidebar {
+  @apply w-64 shrink-0;
+}
+
+.feed-main {
+  @apply flex-1;
+}
+
+.member-card {
+  @apply mb-4 rounded-lg border border-gray-200 p-4 text-center;
+}
+
+.member-card h2 {
+  @apply mt-2 font-semibold;
+}
+
+.sidebar-nav {
+  @apply flex flex-col gap-1;
+}
+
+.sidebar-nav a {
+  @apply rounded px-3 py-2 text-sm font-medium text-gray-700 no-underline hover:bg-gray-100;
+}
+
+/* --- Compose post ----------------------------------------- */
+.compose-post {
+  @apply mb-6 rounded-lg border border-gray-200 p-4;
+}
+
+.compose-textarea {
+  @apply w-full rounded border border-gray-300 p-2 text-sm;
+}
+
+.compose-actions {
+  @apply mt-2 flex items-center gap-2;
+}
+
+.post-type-select {
+  @apply rounded border border-gray-300 px-2 py-1 text-sm;
+}
+
+/* --- Post cards ------------------------------------------- */
+.post-card {
+  @apply mb-4 rounded-lg border border-gray-200 p-4;
+}
+
+.post-header {
+  @apply mb-2 flex items-center gap-2;
+}
+
+.post-meta {
+  @apply flex flex-col;
+}
+
+.post-type-badge {
+  @apply rounded bg-gray-100 px-1 text-xs text-gray-500;
+}
+
+.post-content p {
+  @apply whitespace-pre-wrap text-gray-800;
+}
+
+.post-footer {
+  @apply mt-3 flex gap-2;
+}
+
+.react-btn {
+  @apply cursor-pointer rounded border border-gray-200 bg-transparent px-2 py-1 text-sm transition-colors hover:bg-gray-50;
+}
+
+/* --- Profile layout --------------------------------------- */
+.profile-layout {
+  @apply flex gap-8;
+}
+
+.profile-sidebar {
+  @apply w-72 shrink-0;
+}
+
+.profile-main {
+  @apply flex-1;
+}
+
+.github-link a {
+  @apply text-gray-500 no-underline hover:text-gray-700;
+}
+
+.profile-bio {
+  @apply mt-2 text-sm text-gray-600;
+}
+
+.skills-list {
+  @apply mt-3 flex flex-wrap gap-1;
+}
+
+.skill-tag {
+  @apply rounded-full bg-indigo-50 px-2 py-0.5 text-xs font-medium text-indigo-700;
+}
+
+.connection-actions {
+  @apply mt-4;
+}
+
+/* --- Members grid ----------------------------------------- */
+.members-grid {
+  @apply grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3;
+}
+
+.member-info h3 {
+  @apply font-semibold;
+}
+
+.github-username {
+  @apply text-sm text-gray-500;
+}
+
+/* --- Badges ----------------------------------------------- */
+.badge {
+  @apply inline-block rounded-full px-2 py-0.5 text-xs font-medium;
+}
+
+.badge-connected {
+  @apply bg-blue-100 text-blue-700;
+}
+
+.badge-pending {
+  @apply bg-yellow-100 text-yellow-700;
+}
+
+.badge-opportunity {
+  @apply bg-green-100 text-green-700;
+}
+
+.badge-cohort {
+  @apply bg-purple-100 text-purple-700;
+}
+
+.cohort-badge {
+  @apply inline-block rounded-full bg-indigo-50 px-2 py-0.5 text-xs font-medium text-indigo-600;
+}
+
+/* --- Forms ------------------------------------------------ */
+.form-group {
+  @apply mb-4;
+}
+
+.form-group label {
+  @apply mb-1 block text-sm font-medium text-gray-700;
+}
+
+.form-group input[type="text"],
+.form-group input[type="url"],
+.form-group input[type="date"],
+.form-group input[type="email"],
+.form-group textarea,
+.form-group select {
+  @apply w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none;
+}
+
+.form-group.checkbox {
+  @apply flex items-center gap-2;
+}
+
+.form-group.checkbox label {
+  @apply mb-0;
+}
+
+.form-actions {
+  @apply flex gap-2;
+}
+
+/* --- Projects grid ---------------------------------------- */
+.projects-grid {
+  @apply grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3;
+}
+
+.project-card {
+  @apply block rounded-lg border border-gray-200 p-4 no-underline transition-shadow hover:shadow-md;
+}
+
+.project-card h3 {
+  @apply font-semibold text-gray-900;
+}
+
+.project-tagline {
+  @apply text-sm text-gray-500;
+}
+
+.tech-stack {
+  @apply mt-2 flex flex-wrap gap-1;
+}
+
+.tech-tag {
+  @apply rounded bg-gray-100 px-2 py-0.5 text-xs text-gray-600;
+}
+
+.status-badge {
+  @apply rounded-full px-2 py-0.5 text-xs font-medium;
+}
+
+.status-in_progress {
+  @apply bg-yellow-100 text-yellow-700;
+}
+
+.status-completed {
+  @apply bg-green-100 text-green-700;
+}
+
+.status-archived {
+  @apply bg-gray-100 text-gray-500;
+}
+
+.status-looking_for_collaborators {
+  @apply bg-blue-100 text-blue-700;
+}
+
+/* --- Messages --------------------------------------------- */
+.messages-container {
+  @apply mb-4 h-96 overflow-y-auto rounded border border-gray-200 p-4;
+}
+
+.message {
+  @apply mb-2 rounded-lg px-3 py-2 text-sm;
+}
+
+.message-sent {
+  @apply ml-auto max-w-xs bg-indigo-100 text-right;
+}
+
+.message-received {
+  @apply mr-auto max-w-xs bg-gray-100;
+}
+
+.dm-compose {
+  @apply flex gap-2;
+}
+
+.dm-compose input {
+  @apply flex-1 rounded-md border border-gray-300 px-3 py-2 text-sm;
+}
+
+/* --- Channels --------------------------------------------- */
+.channels-list {
+  @apply space-y-2;
+}
+
+.channel-item {
+  @apply flex items-center gap-3 rounded-lg border border-gray-200 p-3 no-underline hover:bg-gray-50;
+}
+
+.channel-type-badge {
+  @apply rounded bg-gray-100 px-1 py-0.5 text-xs text-gray-500;
+}
+
+.channel-name {
+  @apply font-medium text-gray-900;
+}
+
+.channel-description {
+  @apply text-sm text-gray-500;
+}
+
+/* --- Admin tables ----------------------------------------- */
+.admin-table {
+  @apply w-full border-collapse text-sm;
+}
+
+.admin-table th {
+  @apply border-b border-gray-200 px-4 py-2 text-left font-semibold text-gray-700;
+}
+
+.admin-table td {
+  @apply border-b border-gray-100 px-4 py-2;
+}
+
+/* --- Replies ---------------------------------------------- */
+.reply {
+  @apply mb-2 flex gap-2 text-sm;
+}
+
+.reply-body {
+  @apply rounded-lg bg-gray-50 px-3 py-2;
+}
+
+.reply-form {
+  @apply mt-2 flex gap-2;
+}
+
+.reply-form textarea {
+  @apply flex-1 rounded border border-gray-300 p-2 text-sm;
+}
+
+/* --- Page headers ----------------------------------------- */
+.page-header {
+  @apply mb-6 flex items-center justify-between;
+}
+
+.page-header h1 {
+  @apply text-2xl font-bold text-gray-900;
+}
+
+/* --- Settings sections ------------------------------------ */
+.settings-section {
+  @apply mt-8 border-t border-gray-200 pt-6;
+}

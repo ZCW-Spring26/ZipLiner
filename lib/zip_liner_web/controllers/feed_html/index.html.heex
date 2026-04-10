@@ -1,0 +1,123 @@
+<div class="feed-layout">
+  <aside class="sidebar">
+    <div class="member-card">
+      <img src={@current_member.github_avatar_url} alt={@current_member.display_name} class="avatar" />
+      <h2><%= @current_member.display_name %></h2>
+      <p><%= @current_member.github_username %></p>
+      <%= if @current_member.cohort_id do %>
+        <span class="cohort-badge">Cohort member</span>
+      <% end %>
+    </div>
+    <nav class="sidebar-nav">
+      <a href={~p"/feed"}>Feed</a>
+      <a href={~p"/members"}>People</a>
+      <a href={~p"/projects"}>Projects</a>
+      <a href={~p"/messages"}>Messages</a>
+      <a href={~p"/settings"}>Settings</a>
+    </nav>
+  </aside>
+
+  <main class="feed-main">
+    <section class="compose-post">
+      <form
+        method="post"
+        action={~p"/posts"}
+        hx-post={~p"/posts"}
+        hx-target="#feed-posts"
+        hx-swap="afterbegin"
+      >
+        <input type="hidden" name="_csrf_token" value={get_csrf_token()} />
+        <input type="hidden" name="post[type]" value="status" />
+        <textarea
+          name="post[content]"
+          placeholder="What's on your mind?"
+          maxlength="300"
+          rows="3"
+          class="compose-textarea"
+        ></textarea>
+        <div class="compose-actions">
+          <select name="post[type]" class="post-type-select">
+            <option value="status">Status Update</option>
+            <option value="article">Article Share</option>
+            <option value="project_showcase">Project Showcase</option>
+            <option value="long_form">Long-form Post</option>
+            <option value="cohort_shoutout">Cohort Shoutout</option>
+            <option value="job_signal">Job Signal</option>
+          </select>
+          <button type="submit" class="btn btn-primary">Post</button>
+        </div>
+      </form>
+    </section>
+
+    <section id="feed-posts">
+      <%= for post <- @posts do %>
+        <article class="post-card" id={"post-#{post.id}"}>
+          <header class="post-header">
+            <img
+              src={post.author.github_avatar_url}
+              alt={post.author.display_name}
+              class="avatar-sm"
+            />
+            <div class="post-meta">
+              <a href={~p"/members/#{post.author.id}"}><strong><%= post.author.display_name %></strong></a>
+              <span class="post-type-badge"><%= post.type %></span>
+              <time datetime={DateTime.to_iso8601(post.inserted_at)}>
+                <%= Calendar.strftime(post.inserted_at, "%b %d, %Y") %>
+              </time>
+            </div>
+          </header>
+          <div class="post-content">
+            <p><%= post.content %></p>
+          </div>
+          <footer class="post-footer">
+            <button
+              class="react-btn"
+              hx-post={~p"/posts/#{post.id}/react"}
+              hx-vals='{"kind": "thumbs_up"}'
+              hx-target={"#post-#{post.id}"}
+              hx-swap="outerHTML"
+            >
+              👍
+            </button>
+            <button
+              class="react-btn"
+              hx-post={~p"/posts/#{post.id}/react"}
+              hx-vals='{"kind": "fire"}'
+              hx-target={"#post-#{post.id}"}
+              hx-swap="outerHTML"
+            >
+              🔥
+            </button>
+            <button
+              class="react-btn"
+              hx-post={~p"/posts/#{post.id}/react"}
+              hx-vals='{"kind": "lightbulb"}'
+              hx-target={"#post-#{post.id}"}
+              hx-swap="outerHTML"
+            >
+              💡
+            </button>
+            <button
+              class="react-btn"
+              hx-post={~p"/posts/#{post.id}/react"}
+              hx-vals='{"kind": "celebrate"}'
+              hx-target={"#post-#{post.id}"}
+              hx-swap="outerHTML"
+            >
+              🎉
+            </button>
+            <a
+              href={~p"/posts/#{post.id}"}
+              hx-get={~p"/posts/#{post.id}"}
+              hx-target={"#post-#{post.id}-replies"}
+              hx-swap="innerHTML"
+            >
+              Reply
+            </a>
+          </footer>
+          <div id={"post-#{post.id}-replies"}></div>
+        </article>
+      <% end %>
+    </section>
+  </main>
+</div>

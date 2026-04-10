@@ -1,0 +1,14 @@
+<h1>Messages</h1>
+
+<div class="messages-list">
+  <%= if @connected_members == [] do %>
+    <p>You have no connections yet. <a href={~p"/members"}>Find people to connect with.</a></p>
+  <% else %>
+    <%= for member <- @connected_members do %>
+      <a href={~p"/messages/#{member.id}"} class="message-thread-link">
+        <img src={member.github_avatar_url} alt={member.display_name} class="avatar-sm" />
+        <span><%= member.display_name %></span>
+      </a>
+    <% end %>
+  <% end %>
+</div>

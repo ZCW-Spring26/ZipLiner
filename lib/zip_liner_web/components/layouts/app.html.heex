@@ -1,0 +1,63 @@
+<header class="site-header">
+  <nav class="nav-bar">
+    <a href={~p"/"} class="nav-brand">
+      <span class="brand-name">ZipLiner</span>
+    </a>
+
+    <div class="nav-links">
+      <%= if @current_member do %>
+        <a href={~p"/feed"}>Feed</a>
+        <a href={~p"/members"}>People</a>
+        <a href={~p"/projects"}>Projects</a>
+        <a href={~p"/messages"}>Messages</a>
+        <a href={~p"/channels"}>Channels</a>
+
+        <div class="nav-user">
+          <a href={~p"/members/#{@current_member.id}"}>
+            <img
+              src={@current_member.github_avatar_url}
+              alt={@current_member.display_name}
+              class="avatar-xs"
+            />
+            <span><%= @current_member.display_name %></span>
+          </a>
+          <a href={~p"/settings"}>Settings</a>
+          <form method="post" action={~p"/auth/logout"} style="display:inline">
+            <input type="hidden" name="_csrf_token" value={get_csrf_token()} />
+            <input type="hidden" name="_method" value="delete" />
+            <button type="submit" class="btn-link">Sign Out</button>
+          </form>
+        </div>
+      <% else %>
+        <a href={~p"/auth/github"} class="btn btn-primary">Sign in with GitHub</a>
+      <% end %>
+    </div>
+  </nav>
+</header>
+
+<main class="main-content">
+  <div class="flash-messages">
+    <%= if flash = Phoenix.Flash.get(@flash, :info) do %>
+      <div class="flash flash-info" role="alert">
+        <p><%= flash %></p>
+        <button
+          class="flash-close"
+          hx-on="click: this.closest('.flash').remove()"
+          aria-label="Close"
+        >×</button>
+      </div>
+    <% end %>
+    <%= if flash = Phoenix.Flash.get(@flash, :error) do %>
+      <div class="flash flash-error" role="alert">
+        <p><%= flash %></p>
+        <button
+          class="flash-close"
+          hx-on="click: this.closest('.flash').remove()"
+          aria-label="Close"
+        >×</button>
+      </div>
+    <% end %>
+  </div>
+
+  <%= @inner_content %>
+</main>

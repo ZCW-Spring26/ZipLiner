@@ -1,0 +1,13 @@
+<h1>Channels</h1>
+
+<div class="channels-list">
+  <%= for channel <- @channels do %>
+    <a href={~p"/channels/#{channel.id}"} class="channel-item">
+      <span class="channel-type-badge"><%= channel.type %></span>
+      <span class="channel-name">#<%= channel.name %></span>
+      <%= if channel.description do %>
+        <span class="channel-description"><%= channel.description %></span>
+      <% end %>
+    </a>
+  <% end %>
+</div>

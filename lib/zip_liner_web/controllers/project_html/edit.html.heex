@@ -1,0 +1,61 @@
+<h1>Edit Project</h1>
+
+<form method="post" action={~p"/projects/#{@project.id}"}>
+  <input type="hidden" name="_csrf_token" value={get_csrf_token()} />
+  <input type="hidden" name="_method" value="put" />
+
+  <div class="form-group">
+    <label for="project_name">Project Name *</label>
+    <input type="text" id="project_name" name="project[name]" value={@project.name} maxlength="80" required />
+  </div>
+
+  <div class="form-group">
+    <label for="project_tagline">Tagline</label>
+    <input type="text" id="project_tagline" name="project[tagline]" value={@project.tagline} maxlength="120" />
+  </div>
+
+  <div class="form-group">
+    <label for="project_description">Description</label>
+    <textarea id="project_description" name="project[description]" maxlength="800" rows="5"><%= @project.description %></textarea>
+  </div>
+
+  <div class="form-group">
+    <label for="project_status">Status</label>
+    <select id="project_status" name="project[status]">
+      <%= for status <- ~w(in_progress completed archived looking_for_collaborators) do %>
+        <option value={status} selected={to_string(@project.status) == status}><%= status %></option>
+      <% end %>
+    </select>
+  </div>
+
+  <div class="form-group">
+    <label for="project_repo_url">GitHub Repository URL</label>
+    <input type="url" id="project_repo_url" name="project[repo_url]" value={@project.repo_url} />
+  </div>
+
+  <div class="form-group">
+    <label for="project_demo_url">Live Demo URL</label>
+    <input type="url" id="project_demo_url" name="project[demo_url]" value={@project.demo_url} />
+  </div>
+
+  <div class="form-group">
+    <label for="project_role">Your Role</label>
+    <input type="text" id="project_role" name="project[role]" value={@project.role} />
+  </div>
+
+  <div class="form-group checkbox">
+    <input
+      type="checkbox"
+      id="project_cohort_project"
+      name="project[cohort_project]"
+      value="true"
+      checked={@project.cohort_project}
+    />
+    <label for="project_cohort_project">This is a ZipCode cohort project</label>
+  </div>
+
+  <div class="form-actions">
+    <button type="submit" class="btn btn-primary">Update Project</button>
+    <a href={~p"/projects/#{@project.id}"} class="btn btn-secondary">Cancel</a>
+  </div>
+</form>

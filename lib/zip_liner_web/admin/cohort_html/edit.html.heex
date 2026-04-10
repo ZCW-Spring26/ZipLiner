@@ -1,0 +1,26 @@
+<h1>Edit Cohort</h1>
+
+<form method="post" action={~p"/admin/cohorts/#{@cohort.id}"}>
+  <input type="hidden" name="_csrf_token" value={get_csrf_token()} />
+  <input type="hidden" name="_method" value="put" />
+
+  <div class="form-group">
+    <label for="cohort_name">Cohort Name *</label>
+    <input type="text" id="cohort_name" name="cohort[name]" value={@cohort.name} maxlength="100" required />
+  </div>
+
+  <div class="form-group">
+    <label for="cohort_start_date">Start Date *</label>
+    <input type="date" id="cohort_start_date" name="cohort[start_date]" value={@cohort.start_date} required />
+  </div>
+
+  <div class="form-group">
+    <label for="cohort_graduation_date">Graduation Date</label>
+    <input type="date" id="cohort_graduation_date" name="cohort[graduation_date]" value={@cohort.graduation_date} />
+  </div>
+
+  <div class="form-actions">
+    <button type="submit" class="btn btn-primary">Update Cohort</button>
+    <a href={~p"/admin/cohorts/#{@cohort.id}"} class="btn btn-secondary">Cancel</a>
+  </div>
+</form>
