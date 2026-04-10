@@ -1,11 +1,13 @@
-<h1><%= @cohort.name %></h1>
+<h1 class="h3 mb-4"><%= @cohort.name %></h1>
 
-<dl>
-  <dt>Start Date</dt>
-  <dd><%= @cohort.start_date %></dd>
-  <dt>Graduation Date</dt>
-  <dd><%= @cohort.graduation_date || "–" %></dd>
+<dl class="row" style="max-width: 400px;">
+  <dt class="col-sm-4 fw-semibold">Start Date</dt>
+  <dd class="col-sm-8"><%= @cohort.start_date %></dd>
+  <dt class="col-sm-4 fw-semibold">Graduation Date</dt>
+  <dd class="col-sm-8"><%= @cohort.graduation_date || "–" %></dd>
 </dl>
 
-<a href={~p"/admin/cohorts/#{@cohort.id}/edit"} class="btn btn-secondary">Edit</a>
-<a href={~p"/admin/cohorts"} class="btn btn-link">Back to Cohorts</a>
+<div class="d-flex gap-2">
+  <a href={~p"/admin/cohorts/#{@cohort.id}/edit"} class="btn btn-outline-secondary btn-sm">Edit</a>
+  <a href={~p"/admin/cohorts"} class="btn btn-link btn-sm">Back to Cohorts</a>
+</div>

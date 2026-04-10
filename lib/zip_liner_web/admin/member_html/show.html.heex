@@ -1,13 +1,15 @@
-<h1>Member: <%= @member.display_name %></h1>
+<h1 class="h3 mb-4">Member: <%= @member.display_name %></h1>
 
-<dl>
-  <dt>GitHub</dt>
-  <dd><a href={"https://github.com/#{@member.github_username}"}>@<%= @member.github_username %></a></dd>
-  <dt>Role</dt>
-  <dd><%= @member.role %></dd>
-  <dt>Status</dt>
-  <dd><%= @member.status %></dd>
+<dl class="row" style="max-width: 480px;">
+  <dt class="col-sm-3 fw-semibold">GitHub</dt>
+  <dd class="col-sm-9"><a href={"https://github.com/#{@member.github_username}"} class="text-decoration-none">@<%= @member.github_username %></a></dd>
+  <dt class="col-sm-3 fw-semibold">Role</dt>
+  <dd class="col-sm-9"><span class="badge text-bg-secondary"><%= @member.role %></span></dd>
+  <dt class="col-sm-3 fw-semibold">Status</dt>
+  <dd class="col-sm-9"><span class="badge text-bg-secondary"><%= @member.status %></span></dd>
 </dl>
 
-<a href={~p"/admin/members/#{@member.id}/edit"} class="btn btn-secondary">Edit</a>
-<a href={~p"/admin/members"} class="btn btn-link">Back</a>
+<div class="d-flex gap-2">
+  <a href={~p"/admin/members/#{@member.id}/edit"} class="btn btn-outline-secondary btn-sm">Edit</a>
+  <a href={~p"/admin/members"} class="btn btn-link btn-sm">Back</a>
+</div>

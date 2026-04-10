@@ -1,26 +1,26 @@
-<h1>New Project</h1>
+<h1 class="h3 mb-4">New Project</h1>
 
-<form method="post" action={~p"/projects"}>
+<form method="post" action={~p"/projects"} class="row g-3" style="max-width: 640px;">
   <input type="hidden" name="_csrf_token" value={get_csrf_token()} />
 
-  <div class="form-group">
-    <label for="project_name">Project Name *</label>
-    <input type="text" id="project_name" name="project[name]" maxlength="80" required />
+  <div class="col-12">
+    <label for="project_name" class="form-label">Project Name *</label>
+    <input type="text" id="project_name" name="project[name]" maxlength="80" required class="form-control" />
   </div>
 
-  <div class="form-group">
-    <label for="project_tagline">Tagline (120 chars max)</label>
-    <input type="text" id="project_tagline" name="project[tagline]" maxlength="120" />
+  <div class="col-12">
+    <label for="project_tagline" class="form-label">Tagline (120 chars max)</label>
+    <input type="text" id="project_tagline" name="project[tagline]" maxlength="120" class="form-control" />
   </div>
 
-  <div class="form-group">
-    <label for="project_description">Description (Markdown, 800 chars max)</label>
-    <textarea id="project_description" name="project[description]" maxlength="800" rows="5"></textarea>
+  <div class="col-12">
+    <label for="project_description" class="form-label">Description (Markdown, 800 chars max)</label>
+    <textarea id="project_description" name="project[description]" maxlength="800" rows="5" class="form-control"></textarea>
   </div>
 
-  <div class="form-group">
-    <label for="project_status">Status</label>
-    <select id="project_status" name="project[status]">
+  <div class="col-md-6">
+    <label for="project_status" class="form-label">Status</label>
+    <select id="project_status" name="project[status]" class="form-select">
       <option value="in_progress">In Progress</option>
       <option value="completed">Completed</option>
       <option value="archived">Archived</option>
@@ -28,28 +28,30 @@
     </select>
   </div>
 
-  <div class="form-group">
-    <label for="project_repo_url">GitHub Repository URL</label>
-    <input type="url" id="project_repo_url" name="project[repo_url]" placeholder="https://github.com/..." />
+  <div class="col-md-6">
+    <label for="project_role" class="form-label">Your Role</label>
+    <input type="text" id="project_role" name="project[role]" placeholder="Solo, Backend Lead, Contributor…" class="form-control" />
   </div>
 
-  <div class="form-group">
-    <label for="project_demo_url">Live Demo URL</label>
-    <input type="url" id="project_demo_url" name="project[demo_url]" placeholder="https://..." />
+  <div class="col-12">
+    <label for="project_repo_url" class="form-label">GitHub Repository URL</label>
+    <input type="url" id="project_repo_url" name="project[repo_url]" placeholder="https://github.com/..." class="form-control" />
   </div>
 
-  <div class="form-group">
-    <label for="project_role">Your Role</label>
-    <input type="text" id="project_role" name="project[role]" placeholder="Solo, Backend Lead, Contributor…" />
+  <div class="col-12">
+    <label for="project_demo_url" class="form-label">Live Demo URL</label>
+    <input type="url" id="project_demo_url" name="project[demo_url]" placeholder="https://..." class="form-control" />
   </div>
 
-  <div class="form-group checkbox">
-    <input type="checkbox" id="project_cohort_project" name="project[cohort_project]" value="true" />
-    <label for="project_cohort_project">This is a ZipCode cohort project</label>
+  <div class="col-12">
+    <div class="form-check">
+      <input type="checkbox" id="project_cohort_project" name="project[cohort_project]" value="true" class="form-check-input" />
+      <label for="project_cohort_project" class="form-check-label">This is a ZipCode cohort project</label>
+    </div>
   </div>
 
-  <div class="form-actions">
+  <div class="col-12 d-flex gap-2">
     <button type="submit" class="btn btn-primary">Create Project</button>
-    <a href={~p"/projects"} class="btn btn-secondary">Cancel</a>
+    <a href={~p"/projects"} class="btn btn-outline-secondary">Cancel</a>
   </div>
 </form>

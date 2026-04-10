@@ -1,26 +1,26 @@
-<h1>Edit Cohort</h1>
+<h1 class="h3 mb-4">Edit Cohort</h1>
 
-<form method="post" action={~p"/admin/cohorts/#{@cohort.id}"}>
+<form method="post" action={~p"/admin/cohorts/#{@cohort.id}"} class="row g-3" style="max-width: 480px;">
   <input type="hidden" name="_csrf_token" value={get_csrf_token()} />
   <input type="hidden" name="_method" value="put" />
 
-  <div class="form-group">
-    <label for="cohort_name">Cohort Name *</label>
-    <input type="text" id="cohort_name" name="cohort[name]" value={@cohort.name} maxlength="100" required />
+  <div class="col-12">
+    <label for="cohort_name" class="form-label">Cohort Name *</label>
+    <input type="text" id="cohort_name" name="cohort[name]" value={@cohort.name} maxlength="100" required class="form-control" />
   </div>
 
-  <div class="form-group">
-    <label for="cohort_start_date">Start Date *</label>
-    <input type="date" id="cohort_start_date" name="cohort[start_date]" value={@cohort.start_date} required />
+  <div class="col-md-6">
+    <label for="cohort_start_date" class="form-label">Start Date *</label>
+    <input type="date" id="cohort_start_date" name="cohort[start_date]" value={@cohort.start_date} required class="form-control" />
   </div>
 
-  <div class="form-group">
-    <label for="cohort_graduation_date">Graduation Date</label>
-    <input type="date" id="cohort_graduation_date" name="cohort[graduation_date]" value={@cohort.graduation_date} />
+  <div class="col-md-6">
+    <label for="cohort_graduation_date" class="form-label">Graduation Date</label>
+    <input type="date" id="cohort_graduation_date" name="cohort[graduation_date]" value={@cohort.graduation_date} class="form-control" />
   </div>
 
-  <div class="form-actions">
+  <div class="col-12 d-flex gap-2">
     <button type="submit" class="btn btn-primary">Update Cohort</button>
-    <a href={~p"/admin/cohorts/#{@cohort.id}"} class="btn btn-secondary">Cancel</a>
+    <a href={~p"/admin/cohorts/#{@cohort.id}"} class="btn btn-outline-secondary">Cancel</a>
   </div>
 </form>

@@ -1,14 +1,16 @@
-<h1>Messages</h1>
+<h1 class="h3 mb-4">Messages</h1>
 
-<div class="messages-list">
+<div>
   <%= if @connected_members == [] do %>
-    <p>You have no connections yet. <a href={~p"/members"}>Find people to connect with.</a></p>
+    <p class="text-muted">You have no connections yet. <a href={~p"/members"}>Find people to connect with.</a></p>
   <% else %>
-    <%= for member <- @connected_members do %>
-      <a href={~p"/messages/#{member.id}"} class="message-thread-link">
-        <img src={member.github_avatar_url} alt={member.display_name} class="avatar-sm" />
-        <span><%= member.display_name %></span>
-      </a>
-    <% end %>
+    <div class="list-group" style="max-width: 480px;">
+      <%= for member <- @connected_members do %>
+        <a href={~p"/messages/#{member.id}"} class="list-group-item list-group-item-action d-flex align-items-center gap-3 py-3">
+          <img src={member.github_avatar_url} alt={member.display_name} class="avatar-sm" />
+          <span class="fw-medium"><%= member.display_name %></span>
+        </a>
+      <% end %>
+    </div>
   <% end %>
 </div>

@@ -1,30 +1,30 @@
-<h1>Edit Member</h1>
+<h1 class="h3 mb-4">Edit Member</h1>
 
-<form method="post" action={~p"/admin/members/#{@member.id}"}>
+<form method="post" action={~p"/admin/members/#{@member.id}"} class="row g-3" style="max-width: 480px;">
   <input type="hidden" name="_csrf_token" value={get_csrf_token()} />
   <input type="hidden" name="_method" value="put" />
 
-  <div class="form-group">
-    <label for="member_role">Role</label>
-    <select id="member_role" name="member[role]">
+  <div class="col-12">
+    <label for="member_role" class="form-label">Role</label>
+    <select id="member_role" name="member[role]" class="form-select">
       <%= for role <- ~w(student alumni instructor staff mentor guest) do %>
         <option value={role} selected={to_string(@member.role) == role}><%= role %></option>
       <% end %>
     </select>
   </div>
 
-  <div class="form-group">
-    <label for="member_status">Status</label>
-    <select id="member_status" name="member[status]">
+  <div class="col-12">
+    <label for="member_status" class="form-label">Status</label>
+    <select id="member_status" name="member[status]" class="form-select">
       <%= for status <- ~w(active suspended deprovisioned) do %>
         <option value={status} selected={to_string(@member.status) == status}><%= status %></option>
       <% end %>
     </select>
   </div>
 
-  <div class="form-group">
-    <label for="member_cohort_id">Cohort</label>
-    <select id="member_cohort_id" name="member[cohort_id]">
+  <div class="col-12">
+    <label for="member_cohort_id" class="form-label">Cohort</label>
+    <select id="member_cohort_id" name="member[cohort_id]" class="form-select">
       <option value="">– No cohort –</option>
       <%= for cohort <- @cohorts do %>
         <option value={cohort.id} selected={@member.cohort_id == cohort.id}><%= cohort.name %></option>
@@ -32,8 +32,8 @@
     </select>
   </div>
 
-  <div class="form-actions">
+  <div class="col-12 d-flex gap-2">
     <button type="submit" class="btn btn-primary">Update Member</button>
-    <a href={~p"/admin/members/#{@member.id}"} class="btn btn-secondary">Cancel</a>
+    <a href={~p"/admin/members/#{@member.id}"} class="btn btn-outline-secondary">Cancel</a>
   </div>
 </form>

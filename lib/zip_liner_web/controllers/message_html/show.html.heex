@@ -1,7 +1,7 @@
-<div class="dm-layout">
-  <div class="dm-header">
+<div style="max-width: 700px;">
+  <div class="d-flex align-items-center gap-3 mb-3 pb-3 border-bottom">
     <img src={@other_member.github_avatar_url} alt={@other_member.display_name} class="avatar-sm" />
-    <h2><%= @other_member.display_name %></h2>
+    <h2 class="h5 mb-0 fw-semibold"><%= @other_member.display_name %></h2>
   </div>
 
   <div
@@ -20,9 +20,9 @@
     hx-target="#messages-container"
     hx-swap="innerHTML"
     hx-headers={Jason.encode!(%{"x-csrf-token" => get_csrf_token()})}
-    class="dm-compose"
+    class="d-flex gap-2"
   >
-    <input type="text" name="message[content]" placeholder="Write a message…" maxlength="5000" required />
+    <input type="text" name="message[content]" placeholder="Write a message…" maxlength="5000" required class="form-control" />
     <button type="submit" class="btn btn-primary">Send</button>
   </form>
 </div>

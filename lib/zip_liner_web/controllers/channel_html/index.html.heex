@@ -1,12 +1,12 @@
-<h1>Channels</h1>
+<h1 class="h3 mb-4">Channels</h1>
 
-<div class="channels-list">
+<div class="list-group">
   <%= for channel <- @channels do %>
-    <a href={~p"/channels/#{channel.id}"} class="channel-item">
-      <span class="channel-type-badge"><%= channel.type %></span>
-      <span class="channel-name">#<%= channel.name %></span>
+    <a href={~p"/channels/#{channel.id}"} class="list-group-item list-group-item-action d-flex align-items-center gap-3 py-3">
+      <span class="badge text-bg-secondary"><%= channel.type %></span>
+      <span class="fw-medium">#<%= channel.name %></span>
       <%= if channel.description do %>
-        <span class="channel-description"><%= channel.description %></span>
+        <span class="text-muted small ms-auto"><%= channel.description %></span>
       <% end %>
     </a>
   <% end %>
