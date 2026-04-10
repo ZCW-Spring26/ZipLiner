@@ -45,9 +45,13 @@ defmodule ZipLiner.Projects.Project do
 
   defp validate_url(changeset, field) do
     validate_change(changeset, field, fn _, value ->
-      case URI.parse(value) do
-        %URI{scheme: scheme} when scheme in ["http", "https"] -> []
-        _ -> [{field, "must be a valid http or https URL"}]
+      if is_nil(value) or value == "" do
+        []
+      else
+        case URI.parse(value) do
+          %URI{scheme: scheme} when scheme in ["http", "https"] -> []
+          _ -> [{field, "must be a valid http or https URL"}]
+        end
       end
     end)
   end

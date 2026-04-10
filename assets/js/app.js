@@ -24,7 +24,7 @@ document.addEventListener("DOMContentLoaded", () => {
 // Phoenix LiveSocket (used for LiveDashboard in dev).
 let liveSocket = new LiveSocket("/live", Socket, {
   longPollFallbackMs: 2500,
-  params: { _csrf_token: document.querySelector("meta[name='csrf-token']").getAttribute("content") },
+  params: { _csrf_token: document.querySelector("meta[name='csrf-token']")?.getAttribute("content") },
 });
 
 liveSocket.connect();
