@@ -1,24 +1,25 @@
-<div class="channel-header">
-  <h1>#<%= @channel.name %></h1>
+<div class="mb-4 pb-3 border-bottom">
+  <h1 class="h4 fw-bold mb-1">#<%= @channel.name %></h1>
   <%= if @channel.description do %>
-    <p><%= @channel.description %></p>
+    <p class="text-muted mb-0"><%= @channel.description %></p>
   <% end %>
 </div>
 
-<div id="channel-posts" class="posts-list">
+<div id="channel-posts">
   <%= for post <- @posts do %>
-    <article class="post-card" id={"post-#{post.id}"}>
-      <header class="post-header">
+    <article class="card mb-3" id={"post-#{post.id}"}>
+      <div class="card-header d-flex align-items-center gap-2 bg-white">
         <img src={post.author.github_avatar_url} alt={post.author.display_name} class="avatar-sm" />
-        <div class="post-meta">
-          <a href={~p"/members/#{post.author.id}"}><strong><%= post.author.display_name %></strong></a>
-          <time datetime={DateTime.to_iso8601(post.inserted_at)}>
+        <div>
+          <a href={~p"/members/#{post.author.id}"} class="fw-semibold text-decoration-none text-dark"><%= post.author.display_name %></a>
+          <br />
+          <time class="small text-muted" datetime={DateTime.to_iso8601(post.inserted_at)}>
             <%= Calendar.strftime(post.inserted_at, "%b %d, %Y") %>
           </time>
         </div>
-      </header>
-      <div class="post-content">
-        <p><%= post.content %></p>
+      </div>
+      <div class="card-body">
+        <p class="mb-0" style="white-space: pre-wrap;"><%= post.content %></p>
       </div>
     </article>
   <% end %>

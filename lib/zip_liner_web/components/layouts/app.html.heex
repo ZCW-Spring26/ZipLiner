@@ -1,63 +1,76 @@
-<header class="site-header">
-  <nav class="nav-bar">
-    <a href={~p"/"} class="nav-brand">
-      <span class="brand-name">ZipLiner</span>
-    </a>
+<nav class="navbar navbar-expand-lg bg-white border-bottom shadow-sm">
+  <div class="container-xl">
+    <a href={~p"/"} class="navbar-brand fw-extrabold text-primary">ZipLiner</a>
 
-    <div class="nav-links">
+    <button
+      class="navbar-toggler"
+      type="button"
+      data-bs-toggle="collapse"
+      data-bs-target="#main-nav"
+      aria-controls="main-nav"
+      aria-expanded="false"
+      aria-label="Toggle navigation"
+    >
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="main-nav">
       <%= if @current_member do %>
-        <a href={~p"/feed"}>Feed</a>
-        <a href={~p"/members"}>People</a>
-        <a href={~p"/projects"}>Projects</a>
-        <a href={~p"/messages"}>Messages</a>
-        <a href={~p"/channels"}>Channels</a>
-
-        <div class="nav-user">
-          <a href={~p"/members/#{@current_member.id}"}>
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item"><a href={~p"/feed"} class="nav-link">Feed</a></li>
+          <li class="nav-item"><a href={~p"/members"} class="nav-link">People</a></li>
+          <li class="nav-item"><a href={~p"/projects"} class="nav-link">Projects</a></li>
+          <li class="nav-item"><a href={~p"/messages"} class="nav-link">Messages</a></li>
+          <li class="nav-item"><a href={~p"/channels"} class="nav-link">Channels</a></li>
+        </ul>
+        <div class="d-flex align-items-center gap-2">
+          <a href={~p"/members/#{@current_member.id}"} class="d-flex align-items-center gap-2 text-decoration-none text-dark">
             <img
               src={@current_member.github_avatar_url}
               alt={@current_member.display_name}
               class="avatar-xs"
             />
-            <span><%= @current_member.display_name %></span>
+            <span class="fw-medium"><%= @current_member.display_name %></span>
           </a>
-          <a href={~p"/settings"}>Settings</a>
-          <form method="post" action={~p"/auth/logout"} style="display:inline">
+          <a href={~p"/settings"} class="btn btn-sm btn-outline-secondary">Settings</a>
+          <form method="post" action={~p"/auth/logout"} class="d-inline m-0">
             <input type="hidden" name="_csrf_token" value={get_csrf_token()} />
             <input type="hidden" name="_method" value="delete" />
-            <button type="submit" class="btn-link">Sign Out</button>
+            <button type="submit" class="btn btn-sm btn-outline-danger">Sign Out</button>
           </form>
         </div>
       <% else %>
-        <a href={~p"/auth/github"} class="btn btn-primary">Sign in with GitHub</a>
+        <div class="ms-auto">
+          <a href={~p"/auth/github"} class="btn btn-primary">Sign in with GitHub</a>
+        </div>
       <% end %>
     </div>
-  </nav>
-</header>
-
-<main class="main-content">
-  <div class="flash-messages">
-    <%= if flash = Phoenix.Flash.get(@flash, :info) do %>
-      <div class="flash flash-info" role="alert">
-        <p><%= flash %></p>
-        <button
-          class="flash-close"
-          hx-on="click: this.closest('.flash').remove()"
-          aria-label="Close"
-        >×</button>
-      </div>
-    <% end %>
-    <%= if flash = Phoenix.Flash.get(@flash, :error) do %>
-      <div class="flash flash-error" role="alert">
-        <p><%= flash %></p>
-        <button
-          class="flash-close"
-          hx-on="click: this.closest('.flash').remove()"
-          aria-label="Close"
-        >×</button>
-      </div>
-    <% end %>
   </div>
+</nav>
+
+<main class="container-xl py-4">
+  <%= if flash = Phoenix.Flash.get(@flash, :info) do %>
+    <div class="alert alert-info alert-dismissible d-flex justify-content-between align-items-start mb-4" role="alert">
+      <p class="mb-0"><%= flash %></p>
+      <button
+        type="button"
+        class="btn-close ms-3"
+        hx-on="click: this.closest('.alert').remove()"
+        aria-label="Close"
+      ></button>
+    </div>
+  <% end %>
+  <%= if flash = Phoenix.Flash.get(@flash, :error) do %>
+    <div class="alert alert-danger alert-dismissible d-flex justify-content-between align-items-start mb-4" role="alert">
+      <p class="mb-0"><%= flash %></p>
+      <button
+        type="button"
+        class="btn-close ms-3"
+        hx-on="click: this.closest('.alert').remove()"
+        aria-label="Close"
+      ></button>
+    </div>
+  <% end %>
 
   <%= @inner_content %>
 </main>

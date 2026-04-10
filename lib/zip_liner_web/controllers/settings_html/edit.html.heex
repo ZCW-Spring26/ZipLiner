@@ -1,13 +1,13 @@
-<h1>Settings</h1>
+<h1 class="h3 mb-4">Settings</h1>
 
-<form method="post" action={~p"/settings"}>
+<form method="post" action={~p"/settings"} class="row g-3" style="max-width: 600px;">
   <input type="hidden" name="_csrf_token" value={get_csrf_token()} />
   <input type="hidden" name="_method" value="put" />
 
-  <h2>Profile</h2>
+  <h2 class="h5 fw-semibold col-12 mb-0">Profile</h2>
 
-  <div class="form-group">
-    <label for="member_display_name">Display Name</label>
+  <div class="col-12">
+    <label for="member_display_name" class="form-label">Display Name</label>
     <input
       type="text"
       id="member_display_name"
@@ -15,55 +15,61 @@
       value={@member.display_name}
       maxlength="100"
       required
+      class="form-control"
     />
   </div>
 
-  <div class="form-group">
-    <label for="member_bio">Bio (280 chars max)</label>
-    <textarea id="member_bio" name="member[bio]" maxlength="280" rows="3"><%= @member.bio %></textarea>
+  <div class="col-12">
+    <label for="member_bio" class="form-label">Bio (280 chars max)</label>
+    <textarea id="member_bio" name="member[bio]" maxlength="280" rows="3" class="form-control"><%= @member.bio %></textarea>
   </div>
 
-  <div class="form-group">
-    <label for="member_current_title">Current Title</label>
-    <input type="text" id="member_current_title" name="member[current_title]" value={@member.current_title} />
+  <div class="col-md-6">
+    <label for="member_current_title" class="form-label">Current Title</label>
+    <input type="text" id="member_current_title" name="member[current_title]" value={@member.current_title} class="form-control" />
   </div>
 
-  <div class="form-group">
-    <label for="member_employer">Employer / Company</label>
-    <input type="text" id="member_employer" name="member[employer]" value={@member.employer} />
+  <div class="col-md-6">
+    <label for="member_employer" class="form-label">Employer / Company</label>
+    <input type="text" id="member_employer" name="member[employer]" value={@member.employer} class="form-control" />
   </div>
 
-  <div class="form-group">
-    <label for="member_location">Location (City)</label>
-    <input type="text" id="member_location" name="member[location]" value={@member.location} />
+  <div class="col-md-6">
+    <label for="member_location" class="form-label">Location (City)</label>
+    <input type="text" id="member_location" name="member[location]" value={@member.location} class="form-control" />
   </div>
 
-  <div class="form-group">
-    <label for="member_linkedin_url">LinkedIn Profile URL</label>
-    <input type="url" id="member_linkedin_url" name="member[linkedin_url]" value={@member.linkedin_url} />
+  <div class="col-md-6">
+    <label for="member_linkedin_url" class="form-label">LinkedIn Profile URL</label>
+    <input type="url" id="member_linkedin_url" name="member[linkedin_url]" value={@member.linkedin_url} class="form-control" />
   </div>
 
-  <div class="form-group checkbox">
-    <input
-      type="checkbox"
-      id="member_open_to_opportunities"
-      name="member[open_to_opportunities]"
-      value="true"
-      checked={@member.open_to_opportunities}
-    />
-    <label for="member_open_to_opportunities">Open to opportunities</label>
+  <div class="col-12">
+    <div class="form-check">
+      <input
+        type="checkbox"
+        id="member_open_to_opportunities"
+        name="member[open_to_opportunities]"
+        value="true"
+        checked={@member.open_to_opportunities}
+        class="form-check-input"
+      />
+      <label for="member_open_to_opportunities" class="form-check-label">Open to opportunities</label>
+    </div>
   </div>
 
-  <div class="form-actions">
+  <div class="col-12">
     <button type="submit" class="btn btn-primary">Save Settings</button>
   </div>
 </form>
 
-<section class="settings-section">
-  <h2>Sign Out</h2>
+<hr class="my-5" style="max-width: 600px;" />
+
+<section style="max-width: 600px;">
+  <h2 class="h5 fw-semibold mb-3">Sign Out</h2>
   <form method="post" action={~p"/auth/logout"}>
     <input type="hidden" name="_csrf_token" value={get_csrf_token()} />
     <input type="hidden" name="_method" value="delete" />
-    <button type="submit" class="btn btn-secondary">Sign Out</button>
+    <button type="submit" class="btn btn-outline-secondary">Sign Out</button>
   </form>
 </section>

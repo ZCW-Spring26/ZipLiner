@@ -1,25 +1,25 @@
-<h1>New Cohort</h1>
+<h1 class="h3 mb-4">New Cohort</h1>
 
-<form method="post" action={~p"/admin/cohorts"}>
+<form method="post" action={~p"/admin/cohorts"} class="row g-3" style="max-width: 480px;">
   <input type="hidden" name="_csrf_token" value={get_csrf_token()} />
 
-  <div class="form-group">
-    <label for="cohort_name">Cohort Name *</label>
-    <input type="text" id="cohort_name" name="cohort[name]" maxlength="100" required />
+  <div class="col-12">
+    <label for="cohort_name" class="form-label">Cohort Name *</label>
+    <input type="text" id="cohort_name" name="cohort[name]" maxlength="100" required class="form-control" />
   </div>
 
-  <div class="form-group">
-    <label for="cohort_start_date">Start Date *</label>
-    <input type="date" id="cohort_start_date" name="cohort[start_date]" required />
+  <div class="col-md-6">
+    <label for="cohort_start_date" class="form-label">Start Date *</label>
+    <input type="date" id="cohort_start_date" name="cohort[start_date]" required class="form-control" />
   </div>
 
-  <div class="form-group">
-    <label for="cohort_graduation_date">Graduation Date</label>
-    <input type="date" id="cohort_graduation_date" name="cohort[graduation_date]" />
+  <div class="col-md-6">
+    <label for="cohort_graduation_date" class="form-label">Graduation Date</label>
+    <input type="date" id="cohort_graduation_date" name="cohort[graduation_date]" class="form-control" />
   </div>
 
-  <div class="form-actions">
+  <div class="col-12 d-flex gap-2">
     <button type="submit" class="btn btn-primary">Create Cohort</button>
-    <a href={~p"/admin/cohorts"} class="btn btn-secondary">Cancel</a>
+    <a href={~p"/admin/cohorts"} class="btn btn-outline-secondary">Cancel</a>
   </div>
 </form>

@@ -1,25 +1,29 @@
-<h1>Cohorts</h1>
-<a href={~p"/admin/cohorts/new"} class="btn btn-primary">New Cohort</a>
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h1 class="h3 mb-0">Cohorts</h1>
+  <a href={~p"/admin/cohorts/new"} class="btn btn-primary btn-sm">New Cohort</a>
+</div>
 
-<table class="admin-table">
-  <thead>
-    <tr>
-      <th>Name</th>
-      <th>Start Date</th>
-      <th>Graduation Date</th>
-      <th>Actions</th>
-    </tr>
-  </thead>
-  <tbody>
-    <%= for cohort <- @cohorts do %>
+<div class="table-responsive">
+  <table class="table table-striped table-hover align-middle">
+    <thead class="table-light">
       <tr>
-        <td><a href={~p"/admin/cohorts/#{cohort.id}"}><%= cohort.name %></a></td>
-        <td><%= cohort.start_date %></td>
-        <td><%= cohort.graduation_date %></td>
-        <td>
-          <a href={~p"/admin/cohorts/#{cohort.id}/edit"}>Edit</a>
-        </td>
+        <th>Name</th>
+        <th>Start Date</th>
+        <th>Graduation Date</th>
+        <th>Actions</th>
       </tr>
-    <% end %>
-  </tbody>
-</table>
+    </thead>
+    <tbody>
+      <%= for cohort <- @cohorts do %>
+        <tr>
+          <td><a href={~p"/admin/cohorts/#{cohort.id}"} class="text-decoration-none fw-medium"><%= cohort.name %></a></td>
+          <td><%= cohort.start_date %></td>
+          <td><%= cohort.graduation_date || "–" %></td>
+          <td>
+            <a href={~p"/admin/cohorts/#{cohort.id}/edit"} class="btn btn-sm btn-outline-secondary">Edit</a>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>

@@ -1,11 +1,11 @@
-<div class="replies-list">
+<div class="px-3 pb-3">
   <%= for reply <- @replies do %>
-    <div class="reply" id={"reply-#{reply.id}"}>
-      <img src={reply.author.github_avatar_url} alt={reply.author.display_name} class="avatar-xs" />
-      <div class="reply-body">
-        <strong><a href={~p"/members/#{reply.author.id}"}><%= reply.author.display_name %></a></strong>
-        <p><%= reply.content %></p>
-        <time datetime={DateTime.to_iso8601(reply.inserted_at)}>
+    <div class="d-flex gap-2 mb-2 small" id={"reply-#{reply.id}"}>
+      <img src={reply.author.github_avatar_url} alt={reply.author.display_name} class="avatar-xs mt-1" />
+      <div class="rounded bg-light px-3 py-2">
+        <strong><a href={~p"/members/#{reply.author.id}"} class="text-decoration-none text-dark"><%= reply.author.display_name %></a></strong>
+        <p class="mb-0"><%= reply.content %></p>
+        <time class="text-muted" datetime={DateTime.to_iso8601(reply.inserted_at)}>
           <%= Calendar.strftime(reply.inserted_at, "%b %d, %Y") %>
         </time>
       </div>
@@ -17,9 +17,9 @@
     hx-target={"#post-#{@post.id}-replies"}
     hx-swap="innerHTML"
     hx-headers={Jason.encode!(%{"x-csrf-token" => get_csrf_token()})}
-    class="reply-form"
+    class="d-flex gap-2 mt-2"
   >
-    <textarea name="reply[content]" placeholder="Write a reply…" rows="2" maxlength="1000"></textarea>
-    <button type="submit" class="btn btn-sm btn-primary">Reply</button>
+    <textarea name="reply[content]" placeholder="Write a reply…" rows="2" maxlength="1000" class="form-control form-control-sm"></textarea>
+    <button type="submit" class="btn btn-sm btn-primary align-self-end">Reply</button>
   </form>
 </div>
