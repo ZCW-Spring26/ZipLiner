@@ -12,7 +12,7 @@
     hx-swap="innerHTML"
     hx-target="#messages-container"
   >
-    <%= render ZipLinerWeb.MessageHTML, "messages_list.html", messages: @messages, current_member: @current_member %>
+    <.messages_list messages={@messages} current_member={@current_member} />
   </div>
 
   <form
