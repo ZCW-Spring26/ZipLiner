@@ -524,6 +524,6 @@ ZipLiner is a conventional Phoenix MVC application. Requests enter through the
 **Endpoint**, pass through **Plug pipelines** that handle sessions, authentication,
 and security headers, reach a **Controller** that delegates to **context modules**
 for business logic, and are finally rendered by **HEEx templates**. The data layer
-uses **Ecto** with SQLite3 and is organised around ten schemas grouped into four
+uses **Ecto** with SQLite3 and is organised around nine schemas grouped into four
 domain contexts. The frontend progressively enhances server-rendered HTML with
 **HTMX** for dynamic interactions and **Bootstrap** for styling.
