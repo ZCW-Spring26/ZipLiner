@@ -7,6 +7,7 @@ config :zip_liner, ZipLiner.Repo,
   show_sensitive_data_on_connection_error: true
 
 config :zip_liner, ZipLinerWeb.Endpoint,
+  url: [host: "localhost", port: 4000],
   http: [ip: {127, 0, 0, 1}, port: 4000],
   check_origin: false,
   code_reloader: true,
