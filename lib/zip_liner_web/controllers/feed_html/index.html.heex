@@ -26,6 +26,7 @@
           hx-post={~p"/posts"}
           hx-target="#feed-posts"
           hx-swap="afterbegin"
+          hx-on::after-request="if(event.detail.successful) this.reset()"
         >
           <input type="hidden" name="_csrf_token" value={get_csrf_token()} />
           <input type="hidden" name="post[type]" value="status" />
