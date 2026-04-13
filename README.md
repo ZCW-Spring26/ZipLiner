@@ -40,11 +40,17 @@ Visit [`http://localhost:4000`](http://localhost:4000).
 
 ### GitHub OAuth App Configuration
 
-When creating your GitHub OAuth App, set the callback URL to:
+When creating your GitHub OAuth App at <https://github.com/settings/developers>:
 
-```
-http://localhost:4000/auth/github/callback
-```
+| Field | Value |
+|---|---|
+| **Application name** | `ZipLiner` |
+| **Homepage URL** | `http://localhost:4000` |
+| **Authorization callback URL** | `http://localhost:4000/auth/github/callback` |
+
+> **Important:** The **Application name** is what GitHub displays to users on the
+> authorization page ("Authorize ZipLiner to access your account"). Make sure it is
+> set to `ZipLiner` — not your personal GitHub username or any other value.
 
 ## Project Structure
 
