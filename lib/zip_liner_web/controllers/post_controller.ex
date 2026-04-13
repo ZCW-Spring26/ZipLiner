@@ -12,7 +12,10 @@ defmodule ZipLinerWeb.PostController do
         post = ZipLiner.Repo.preload(post, :author)
 
         if get_req_header(conn, "hx-request") != [] do
-          render(conn, :post_card, post: post)
+          conn
+          |> put_root_layout(false)
+          |> put_layout(false)
+          |> render(:post_card, post: post)
         else
           conn
           |> put_flash(:info, "Post created.")
@@ -31,7 +34,10 @@ defmodule ZipLinerWeb.PostController do
     replies = Social.list_replies(id)
 
     if get_req_header(conn, "hx-request") != [] do
-      render(conn, :replies, post: post, replies: replies)
+      conn
+      |> put_root_layout(false)
+      |> put_layout(false)
+      |> render(:replies, post: post, replies: replies)
     else
       render(conn, :show, post: post, replies: replies)
     end
@@ -64,7 +70,10 @@ defmodule ZipLinerWeb.PostController do
     post = Social.get_post!(id) |> ZipLiner.Repo.preload(:author)
 
     if get_req_header(conn, "hx-request") != [] do
-      render(conn, :post_card, post: post)
+      conn
+      |> put_root_layout(false)
+      |> put_layout(false)
+      |> render(:post_card, post: post)
     else
       redirect(conn, to: ~p"/feed")
     end
@@ -80,7 +89,10 @@ defmodule ZipLinerWeb.PostController do
         post = Social.get_post!(id)
 
         if get_req_header(conn, "hx-request") != [] do
-          render(conn, :replies, post: post, replies: replies)
+          conn
+          |> put_root_layout(false)
+          |> put_layout(false)
+          |> render(:replies, post: post, replies: replies)
         else
           redirect(conn, to: ~p"/feed")
         end
