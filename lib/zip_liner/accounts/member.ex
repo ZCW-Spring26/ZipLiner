@@ -4,6 +4,7 @@ defmodule ZipLiner.Accounts.Member do
 
   @roles ~w(student alumni instructor staff mentor guest)a
   @statuses ~w(active suspended deprovisioned)a
+  @admin_handles ~w(kristofer)
 
   schema "members" do
     field :github_id, :string
@@ -18,6 +19,7 @@ defmodule ZipLiner.Accounts.Member do
     field :location, :string
     field :role, Ecto.Enum, values: @roles, default: :student
     field :status, Ecto.Enum, values: @statuses, default: :active
+    field :is_admin, :boolean, default: false
     field :open_to_opportunities, :boolean, default: false
     field :skills, {:array, :string}, default: []
     field :avatar_source, Ecto.Enum, values: [:github, :linkedin], default: :github
@@ -72,5 +74,17 @@ defmodule ZipLiner.Accounts.Member do
     |> validate_required([:github_id, :github_username])
     |> unique_constraint(:github_id)
     |> unique_constraint(:github_username)
+    |> maybe_set_admin()
+  end
+
+  # Automatically grant admin privileges to handles listed in @admin_handles.
+  defp maybe_set_admin(changeset) do
+    username = get_field(changeset, :github_username)
+
+    if username && String.downcase(username) in @admin_handles do
+      put_change(changeset, :is_admin, true)
+    else
+      changeset
+    end
   end
 end

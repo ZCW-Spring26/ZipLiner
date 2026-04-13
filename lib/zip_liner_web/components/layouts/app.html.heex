@@ -22,6 +22,24 @@
           <li class="nav-item"><a href={~p"/projects"} class="nav-link">Projects</a></li>
           <li class="nav-item"><a href={~p"/messages"} class="nav-link">Messages</a></li>
           <li class="nav-item"><a href={~p"/channels"} class="nav-link">Channels</a></li>
+          <%= if @current_member.is_admin do %>
+            <li class="nav-item dropdown">
+              <a
+                href="#"
+                class="nav-link dropdown-toggle"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+              >
+                Admin
+              </a>
+              <ul class="dropdown-menu">
+                <li><a href={~p"/admin/members"} class="dropdown-item">Members</a></li>
+                <li><a href={~p"/admin/cohorts"} class="dropdown-item">Cohorts</a></li>
+                <li><hr class="dropdown-divider" /></li>
+                <li><a href={~p"/admin/allowed_handles"} class="dropdown-item">GitHub Whitelist</a></li>
+              </ul>
+            </li>
+          <% end %>
         </ul>
         <div class="d-flex align-items-center gap-2">
           <a href={~p"/members/#{@current_member.id}"} class="d-flex align-items-center gap-2 text-decoration-none text-dark">

@@ -80,6 +80,7 @@ defmodule ZipLinerWeb.Router do
 
     resources "/cohorts", CohortController
     resources "/members", MemberController, only: [:index, :show, :edit, :update, :delete]
+    resources "/allowed_handles", AllowedHandleController, only: [:index, :create, :delete]
   end
 
   # ---------------------------------------------------------------------------
