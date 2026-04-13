@@ -1,0 +1,9 @@
+services:
+  test:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: builder
+    command: sh -c "mix local.rebar --force && mix deps.get && mix test"
+    environment:
+      MIX_ENV: test

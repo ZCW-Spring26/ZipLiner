@@ -31,7 +31,15 @@ defmodule ZipLinerWeb.MessageController do
       |> halt()
     else
       messages = Social.list_direct_messages(current_member.id, other_member.id)
-      render(conn, :show, other_member: other_member, messages: messages)
+
+      if get_req_header(conn, "hx-request") != [] do
+        conn
+        |> put_root_layout(false)
+        |> put_layout(false)
+        |> render(:messages_list, messages: messages, current_member: current_member)
+      else
+        render(conn, :show, other_member: other_member, messages: messages)
+      end
     end
   end
 
@@ -53,7 +61,11 @@ defmodule ZipLinerWeb.MessageController do
         {:ok, _message} ->
           if get_req_header(conn, "hx-request") != [] do
             messages = Social.list_direct_messages(sender.id, recipient.id)
-            render(conn, :messages_list, messages: messages, current_member: sender)
+
+            conn
+            |> put_root_layout(false)
+            |> put_layout(false)
+            |> render(:messages_list, messages: messages, current_member: sender)
           else
             redirect(conn, to: ~p"/messages/#{recipient_id}")
           end

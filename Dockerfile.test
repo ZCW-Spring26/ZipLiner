@@ -1,0 +1,29 @@
+ARG ELIXIR_VERSION=1.17.3
+ARG OTP_VERSION=27.1.2
+ARG ALPINE_VERSION=3.20.3
+
+FROM hexpm/elixir:${ELIXIR_VERSION}-erlang-${OTP_VERSION}-alpine-${ALPINE_VERSION}
+
+RUN apk add --no-cache build-base git sqlite-dev
+
+WORKDIR /app
+
+RUN mix local.hex --force && mix local.rebar --force
+
+COPY mix.exs ./
+
+RUN mkdir config
+
+COPY config ./config
+
+RUN mix deps.get
+
+RUN mix deps.compile
+
+COPY lib ./lib
+COPY test ./test
+COPY priv ./priv
+
+ENV MIX_ENV=test
+
+CMD ["mix", "test"]
