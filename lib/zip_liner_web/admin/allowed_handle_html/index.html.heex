@@ -1,0 +1,86 @@
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h1 class="h3 mb-0">GitHub Whitelist</h1>
+</div>
+
+<p class="text-muted">
+  When the list below is <strong>empty</strong>, any GitHub user may sign in.
+  Once at least one handle is added, only listed handles will be permitted to log in.
+</p>
+
+<div class="row g-4">
+  <div class="col-md-5">
+    <div class="card">
+      <div class="card-header fw-semibold">Add a GitHub Handle</div>
+      <div class="card-body">
+        <.form :let={f} for={@changeset} action={~p"/admin/allowed_handles"}>
+          <div class="mb-3">
+            <label class="form-label">GitHub Username</label>
+            <input
+              type="text"
+              name={f[:handle].name}
+              value={f[:handle].value}
+              class={"form-control#{if f[:handle].errors != [], do: " is-invalid"}"}
+              placeholder="e.g. octocat"
+              autocomplete="off"
+            />
+            <%= for {msg, _opts} <- f[:handle].errors do %>
+              <div class="invalid-feedback"><%= msg %></div>
+            <% end %>
+          </div>
+          <button type="submit" class="btn btn-primary btn-sm">Add Handle</button>
+        </.form>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-7">
+    <%= if Enum.empty?(@handles) do %>
+      <div class="alert alert-info">No handles in the whitelist — all GitHub users may sign in.</div>
+    <% else %>
+      <div class="table-responsive">
+        <table class="table table-striped table-hover align-middle">
+          <thead class="table-light">
+            <tr>
+              <th>GitHub Handle</th>
+              <th>Added</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <%= for handle <- @handles do %>
+              <tr>
+                <td>
+                  <a
+                    href={"https://github.com/#{handle.handle}"}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="text-decoration-none fw-medium"
+                  >
+                    @<%= handle.handle %>
+                  </a>
+                </td>
+                <td class="text-muted small"><%= Calendar.strftime(handle.inserted_at, "%b %d, %Y") %></td>
+                <td class="text-end">
+                  <.form
+                    for={%{}}
+                    action={~p"/admin/allowed_handles/#{handle.id}"}
+                    method="delete"
+                    class="d-inline"
+                  >
+                    <button
+                      type="submit"
+                      class="btn btn-sm btn-outline-danger"
+                      data-confirm="Remove @{handle.handle} from the whitelist?"
+                    >
+                      Remove
+                    </button>
+                  </.form>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    <% end %>
+  </div>
+</div>

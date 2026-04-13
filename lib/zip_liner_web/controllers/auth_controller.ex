@@ -41,6 +41,15 @@ defmodule ZipLinerWeb.AuthController do
         |> put_flash(:info, "Welcome back, #{member.display_name}!")
         |> redirect(to: ~p"/feed")
 
+      {:error, :not_whitelisted} ->
+        conn
+        |> put_flash(
+          :error,
+          "Your GitHub account is not authorised to access this site. " <>
+            "Please contact an administrator."
+        )
+        |> redirect(to: ~p"/")
+
       {:error, _changeset} ->
         conn
         |> put_flash(:error, "Could not sign you in. Please contact an administrator.")
