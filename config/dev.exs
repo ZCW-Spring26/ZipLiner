@@ -28,6 +28,8 @@ config :zip_liner, ZipLinerWeb.Endpoint,
   ]
 
 config :zip_liner, :github_oauth,
+  # Credentials for a GitHub OAuth App named "ZipLiner"
+  # (the Application name is what users see on GitHub's authorization page)
   client_id: System.get_env("GITHUB_CLIENT_ID", "dev_client_id"),
   client_secret: System.get_env("GITHUB_CLIENT_SECRET", "dev_client_secret")
 
