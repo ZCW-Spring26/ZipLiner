@@ -45,6 +45,9 @@
 
 /* --- Responsive helpers ----------------------------------- */
 
+/* Channel list: cap description width so long text doesn't overflow the row */
+.channel-description { max-width: 40%; }
+
 /* Reduce main content padding on small screens */
 @media (max-width: 575.98px) {
   main.container-xl {
