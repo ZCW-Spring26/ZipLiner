@@ -6,8 +6,10 @@
       <span class="badge text-bg-secondary"><%= channel.type %></span>
       <span class="fw-medium">#<%= channel.name %></span>
       <%= if channel.description do %>
-        <span class="text-muted small ms-auto"><%= channel.description %></span>
-      <% end %>
+          <span class="text-muted small ms-auto d-none d-sm-inline text-truncate channel-description">
+            <%= channel.description %>
+          </span>
+        <% end %>
     </a>
   <% end %>
 </div>

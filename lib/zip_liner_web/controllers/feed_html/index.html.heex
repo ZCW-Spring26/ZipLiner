@@ -1,6 +1,6 @@
-<div class="d-flex gap-4">
-  <aside style="width: 16rem; flex-shrink: 0;">
-    <div class="card mb-4 text-center p-3">
+<div class="row g-4">
+  <aside class="col-12 col-md-4 col-lg-3">
+    <div class="card mb-3 text-center p-3">
       <img src={@current_member.github_avatar_url} alt={@current_member.display_name} class="avatar mx-auto mb-2" />
       <h2 class="h6 mb-0 fw-semibold"><%= @current_member.display_name %></h2>
       <p class="small text-muted mb-1">@<%= @current_member.github_username %></p>
@@ -8,7 +8,7 @@
         <span class="badge text-bg-primary">Cohort member</span>
       <% end %>
     </div>
-    <nav class="nav flex-column gap-1">
+    <nav class="nav flex-column gap-1 d-none d-md-flex">
       <a href={~p"/feed"} class="nav-link text-dark px-3 py-2 rounded">Feed</a>
       <a href={~p"/members"} class="nav-link text-dark px-3 py-2 rounded">People</a>
       <a href={~p"/projects"} class="nav-link text-dark px-3 py-2 rounded">Projects</a>
@@ -17,7 +17,7 @@
     </nav>
   </aside>
 
-  <main class="flex-grow-1">
+  <div class="col-12 col-md-8 col-lg-9">
     <div class="card mb-4">
       <div class="card-body">
         <form
@@ -62,5 +62,5 @@
         />
       <% end %>
     </section>
-  </main>
+  </div>
 </div>
