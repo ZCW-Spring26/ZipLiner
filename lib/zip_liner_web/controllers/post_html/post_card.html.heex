@@ -15,37 +15,37 @@
   </div>
   <div class="card-footer d-flex gap-2 bg-white">
     <button
-      class="react-btn"
+      class={"react-btn#{if :thumbs_up in @my_reactions, do: " active", else: ""}"}
       hx-post={~p"/posts/#{@post.id}/react"}
       hx-vals='{"kind": "thumbs_up"}'
       hx-target={"#post-#{@post.id}"}
       hx-swap="outerHTML"
       hx-headers={Jason.encode!(%{"x-csrf-token" => get_csrf_token()})}
-    >👍</button>
+    >👍 <%= @reactions.thumbs_up %></button>
     <button
-      class="react-btn"
+      class={"react-btn#{if :fire in @my_reactions, do: " active", else: ""}"}
       hx-post={~p"/posts/#{@post.id}/react"}
       hx-vals='{"kind": "fire"}'
       hx-target={"#post-#{@post.id}"}
       hx-swap="outerHTML"
       hx-headers={Jason.encode!(%{"x-csrf-token" => get_csrf_token()})}
-    >🔥</button>
+    >🔥 <%= @reactions.fire %></button>
     <button
-      class="react-btn"
+      class={"react-btn#{if :lightbulb in @my_reactions, do: " active", else: ""}"}
       hx-post={~p"/posts/#{@post.id}/react"}
       hx-vals='{"kind": "lightbulb"}'
       hx-target={"#post-#{@post.id}"}
       hx-swap="outerHTML"
       hx-headers={Jason.encode!(%{"x-csrf-token" => get_csrf_token()})}
-    >💡</button>
+    >💡 <%= @reactions.lightbulb %></button>
     <button
-      class="react-btn"
+      class={"react-btn#{if :celebrate in @my_reactions, do: " active", else: ""}"}
       hx-post={~p"/posts/#{@post.id}/react"}
       hx-vals='{"kind": "celebrate"}'
       hx-target={"#post-#{@post.id}"}
       hx-swap="outerHTML"
       hx-headers={Jason.encode!(%{"x-csrf-token" => get_csrf_token()})}
-    >🎉</button>
+    >🎉 <%= @reactions.celebrate %></button>
     <a
       class="btn btn-sm btn-outline-secondary"
       hx-get={~p"/posts/#{@post.id}"}

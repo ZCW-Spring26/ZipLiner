@@ -137,6 +137,76 @@ defmodule ZipLiner.Social do
     |> Repo.delete_all()
   end
 
+  @doc "Toggles a reaction: adds it if absent, removes it if already present."
+  def toggle_reaction(post_id, member_id, kind) do
+    case Repo.one(
+           from r in Reaction,
+           where: r.post_id == ^post_id and r.member_id == ^member_id and r.kind == ^kind
+         ) do
+      nil ->
+        %Reaction{}
+        |> Reaction.changeset(%{post_id: post_id, member_id: member_id, kind: kind})
+        |> Repo.insert()
+
+      reaction ->
+        Repo.delete(reaction)
+    end
+  end
+
+  @doc "Returns a map of reaction counts per kind for a post, defaulting to 0."
+  def get_reaction_counts(post_id) do
+    counts =
+      Reaction
+      |> where([r], r.post_id == ^post_id)
+      |> group_by([r], r.kind)
+      |> select([r], {r.kind, count(r.id)})
+      |> Repo.all()
+      |> Map.new()
+
+    Map.merge(%{thumbs_up: 0, fire: 0, lightbulb: 0, celebrate: 0}, counts)
+  end
+
+  @doc "Returns a map of post_id => reaction-counts map for a list of posts (batch, avoids N+1)."
+  def get_reaction_counts_batch(post_ids) do
+    rows =
+      Reaction
+      |> where([r], r.post_id in ^post_ids)
+      |> group_by([r], [r.post_id, r.kind])
+      |> select([r], {r.post_id, r.kind, count(r.id)})
+      |> Repo.all()
+
+    defaults = %{thumbs_up: 0, fire: 0, lightbulb: 0, celebrate: 0}
+
+    base = Map.new(post_ids, fn id -> {id, defaults} end)
+
+    Enum.reduce(rows, base, fn {post_id, kind, cnt}, acc ->
+      Map.update!(acc, post_id, fn counts -> Map.put(counts, kind, cnt) end)
+    end)
+  end
+
+  @doc "Returns the list of reaction kinds a member has applied to a post."
+  def member_reaction_kinds(post_id, member_id) do
+    Reaction
+    |> where([r], r.post_id == ^post_id and r.member_id == ^member_id)
+    |> select([r], r.kind)
+    |> Repo.all()
+  end
+
+  @doc "Returns a map of post_id => [kinds] for a member across a list of posts (batch, avoids N+1)."
+  def member_reaction_kinds_batch(post_ids, member_id) do
+    rows =
+      Reaction
+      |> where([r], r.post_id in ^post_ids and r.member_id == ^member_id)
+      |> select([r], {r.post_id, r.kind})
+      |> Repo.all()
+
+    base = Map.new(post_ids, fn id -> {id, []} end)
+
+    Enum.reduce(rows, base, fn {post_id, kind}, acc ->
+      Map.update!(acc, post_id, fn kinds -> [kind | kinds] end)
+    end)
+  end
+
   # ---------------------------------------------------------------------------
   # Replies
   # ---------------------------------------------------------------------------

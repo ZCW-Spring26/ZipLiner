@@ -10,12 +10,13 @@ defmodule ZipLinerWeb.PostController do
     case Social.create_post(params) do
       {:ok, post} ->
         post = ZipLiner.Repo.preload(post, :author)
+        empty_reactions = %{thumbs_up: 0, fire: 0, lightbulb: 0, celebrate: 0}
 
         if get_req_header(conn, "hx-request") != [] do
           conn
           |> put_root_layout(false)
           |> put_layout(false)
-          |> render(:post_card, post: post)
+          |> render(:post_card, post: post, reactions: empty_reactions, my_reactions: [])
         else
           conn
           |> put_flash(:info, "Post created.")
@@ -65,15 +66,18 @@ defmodule ZipLinerWeb.PostController do
 
   def react(conn, %{"id" => id, "kind" => kind}) do
     member_id = conn.assigns.current_member.id
-    Social.add_reaction(String.to_integer(id), member_id, String.to_atom(kind))
+    post_id = String.to_integer(id)
+    Social.toggle_reaction(post_id, member_id, String.to_atom(kind))
 
     post = Social.get_post!(id) |> ZipLiner.Repo.preload(:author)
+    reactions = Social.get_reaction_counts(post_id)
+    my_reactions = Social.member_reaction_kinds(post_id, member_id)
 
     if get_req_header(conn, "hx-request") != [] do
       conn
       |> put_root_layout(false)
       |> put_layout(false)
-      |> render(:post_card, post: post)
+      |> render(:post_card, post: post, reactions: reactions, my_reactions: my_reactions)
     else
       redirect(conn, to: ~p"/feed")
     end
