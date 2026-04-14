@@ -4,7 +4,7 @@
       <img src={reply.author.github_avatar_url} alt={reply.author.display_name} class="avatar-xs mt-1" />
       <div class="rounded bg-light px-3 py-2">
         <strong><a href={~p"/members/#{reply.author.id}"} class="text-decoration-none text-dark"><%= reply.author.display_name %></a></strong>
-        <p class="mb-0"><%= reply.content %></p>
+        <div class="mb-0 markdown-body"><%= ZipLiner.Markdown.to_html(reply.content) %></div>
         <time class="text-muted" datetime={DateTime.to_iso8601(reply.inserted_at)}>
           <%= Calendar.strftime(reply.inserted_at, "%b %d, %Y") %>
         </time>
