@@ -1,0 +1,93 @@
+<div class="mb-4">
+  <a href={~p"/forums"} class="text-decoration-none text-muted small">← Back to Forum</a>
+</div>
+
+<div class="card mb-4">
+  <div class="card-header d-flex align-items-center gap-2 bg-white">
+    <img src={@thread.author.github_avatar_url} alt={@thread.author.display_name} class="avatar-sm" />
+    <div class="flex-grow-1">
+      <a href={~p"/members/#{@thread.author.id}"} class="fw-semibold text-decoration-none text-dark">
+        <%= @thread.author.display_name %>
+      </a>
+      <br />
+      <time class="small text-muted" datetime={DateTime.to_iso8601(@thread.inserted_at)}>
+        <%= Calendar.strftime(@thread.inserted_at, "%b %d, %Y") %>
+      </time>
+    </div>
+    <%= if @current_member.id == @thread.author_id or @current_member.is_admin do %>
+      <form method="post" action={~p"/forums/#{@thread.id}"} class="d-inline m-0">
+        <input type="hidden" name="_csrf_token" value={get_csrf_token()} />
+        <input type="hidden" name="_method" value="delete" />
+        <button type="submit" class="btn btn-sm btn-outline-danger"
+          onclick="return confirm('Delete this thread and all its comments?')">Delete</button>
+      </form>
+    <% end %>
+  </div>
+  <div class="card-body">
+    <h1 class="h5 fw-bold mb-3"><%= @thread.title %></h1>
+    <div class="markdown-body"><%= ZipLiner.Markdown.to_html(@thread.body) %></div>
+  </div>
+</div>
+
+<h2 class="h6 fw-semibold mb-3">
+  <%= length(@thread.comments) %> <%= if length(@thread.comments) == 1, do: "Comment", else: "Comments" %>
+</h2>
+
+<div id="forum-comments">
+  <%= for comment <- @thread.comments do %>
+    <div class="d-flex gap-3 mb-3" id={"comment-#{comment.id}"}>
+      <img src={comment.author.github_avatar_url} alt={comment.author.display_name} class="avatar-sm flex-shrink-0 mt-1" />
+      <div class="flex-grow-1">
+        <div class="card">
+          <div class="card-header d-flex justify-content-between align-items-center bg-white py-2">
+            <div>
+              <a href={~p"/members/#{comment.author.id}"} class="fw-semibold text-decoration-none text-dark small">
+                <%= comment.author.display_name %>
+              </a>
+              <span class="text-muted small ms-2">@<%= comment.author.github_username %></span>
+            </div>
+            <div class="d-flex align-items-center gap-2">
+              <time class="small text-muted" datetime={DateTime.to_iso8601(comment.inserted_at)}>
+                <%= Calendar.strftime(comment.inserted_at, "%b %d, %Y") %>
+              </time>
+              <%= if @current_member.id == comment.author_id or @current_member.is_admin do %>
+                <form method="post" action={~p"/forums/#{@thread.id}/comments/#{comment.id}"} class="d-inline m-0">
+                  <input type="hidden" name="_csrf_token" value={get_csrf_token()} />
+                  <input type="hidden" name="_method" value="delete" />
+                  <button type="submit" class="btn btn-sm btn-link text-danger p-0"
+                    onclick="return confirm('Delete this comment?')">Delete</button>
+                </form>
+              <% end %>
+            </div>
+          </div>
+          <div class="card-body py-2">
+            <div class="markdown-body small"><%= ZipLiner.Markdown.to_html(comment.body) %></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  <% end %>
+</div>
+
+<div class="card mt-4">
+  <div class="card-header bg-white fw-semibold">Add a Comment</div>
+  <div class="card-body">
+    <p class="small text-muted mb-3">
+      Use <code>@username</code> to mention members and notify them.
+    </p>
+    <form method="post" action={~p"/forums/#{@thread.id}/comments"}>
+      <input type="hidden" name="_csrf_token" value={get_csrf_token()} />
+      <div class="mb-3">
+        <textarea
+          name="forum_comment[body]"
+          rows="4"
+          maxlength="5000"
+          class="form-control"
+          placeholder="Write your comment… Use @username to mention someone."
+          required
+        ></textarea>
+      </div>
+      <button type="submit" class="btn btn-primary">Post Comment</button>
+    </form>
+  </div>
+</div>

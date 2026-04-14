@@ -31,6 +31,11 @@ defmodule ZipLiner.Accounts do
     Repo.get_by(Member, github_id: github_id)
   end
 
+  @doc "Gets a member by github_username, returns nil if not found."
+  def get_member_by_github_username(username) do
+    Repo.get_by(Member, github_username: username)
+  end
+
   @doc """
   Finds or creates a member from GitHub OAuth data.
 

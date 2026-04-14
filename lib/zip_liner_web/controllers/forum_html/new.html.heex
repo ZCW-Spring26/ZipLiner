@@ -1,0 +1,55 @@
+<div class="mb-4">
+  <a href={~p"/forums"} class="text-decoration-none text-muted small">← Back to Forum</a>
+</div>
+
+<div class="row justify-content-center">
+  <div class="col-12 col-md-8 col-lg-7">
+    <h1 class="h4 fw-bold mb-4">New Thread</h1>
+
+    <div class="card">
+      <div class="card-body">
+        <form method="post" action={~p"/forums"}>
+          <input type="hidden" name="_csrf_token" value={get_csrf_token()} />
+
+          <div class="mb-3">
+            <label for="forum_thread_title" class="form-label fw-semibold">Title</label>
+            <input
+              type="text"
+              id="forum_thread_title"
+              name="forum_thread[title]"
+              class={"form-control#{if @changeset.errors[:title], do: " is-invalid", else: ""}"}
+              maxlength="200"
+              placeholder="What's your topic?"
+              required
+            />
+            <%= if msg = @changeset.errors[:title] do %>
+              <div class="invalid-feedback"><%= elem(msg, 0) %></div>
+            <% end %>
+          </div>
+
+          <div class="mb-3">
+            <label for="forum_thread_body" class="form-label fw-semibold">Body</label>
+            <p class="small text-muted mb-1">Markdown is supported. Use <code>@username</code> to mention members.</p>
+            <textarea
+              id="forum_thread_body"
+              name="forum_thread[body]"
+              rows="8"
+              maxlength="10000"
+              class={"form-control#{if @changeset.errors[:body], do: " is-invalid", else: ""}"}
+              placeholder="Start the discussion…"
+              required
+            ></textarea>
+            <%= if msg = @changeset.errors[:body] do %>
+              <div class="invalid-feedback"><%= elem(msg, 0) %></div>
+            <% end %>
+          </div>
+
+          <div class="d-flex gap-2">
+            <button type="submit" class="btn btn-primary">Post Thread</button>
+            <a href={~p"/forums"} class="btn btn-outline-secondary">Cancel</a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
