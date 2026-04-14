@@ -20,6 +20,7 @@
     hx-target="#messages-container"
     hx-swap="innerHTML"
     hx-headers={Jason.encode!(%{"x-csrf-token" => get_csrf_token()})}
+    hx-on::after-request="if(event.detail.successful) this.reset()"
     class="d-flex gap-2"
   >
     <input type="text" name="message[content]" placeholder="Write a message…" maxlength="5000" required class="form-control" />
