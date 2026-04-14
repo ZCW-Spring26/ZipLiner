@@ -63,6 +63,10 @@ defmodule ZipLinerWeb.Router do
 
     resources "/channels", ChannelController, only: [:index, :show]
 
+    resources "/forums", ForumController, only: [:index, :new, :create, :show, :delete]
+    post "/forums/:forum_id/comments", ForumCommentController, :create
+    delete "/forums/:forum_id/comments/:id", ForumCommentController, :delete
+
     get "/messages", MessageController, :index
     get "/messages/:member_id", MessageController, :show
     post "/messages/:member_id", MessageController, :create
