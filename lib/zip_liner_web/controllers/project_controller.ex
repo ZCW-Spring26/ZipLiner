@@ -40,8 +40,9 @@ defmodule ZipLinerWeb.ProjectController do
 
   def edit(conn, %{"id" => id}) do
     project = Projects.get_project!(id)
+    current_member = conn.assigns.current_member
 
-    if project.owner_id != conn.assigns.current_member.id do
+    if current_member.id != project.owner_id && !current_member.is_admin do
       conn
       |> put_flash(:error, "You can only edit your own projects.")
       |> redirect(to: ~p"/projects/#{project.id}")
@@ -53,8 +54,9 @@ defmodule ZipLinerWeb.ProjectController do
 
   def update(conn, %{"id" => id, "project" => project_params}) do
     project = Projects.get_project!(id)
+    current_member = conn.assigns.current_member
 
-    if project.owner_id != conn.assigns.current_member.id do
+    if current_member.id != project.owner_id && !current_member.is_admin do
       conn
       |> put_flash(:error, "You can only edit your own projects.")
       |> redirect(to: ~p"/projects/#{project.id}")
@@ -73,8 +75,9 @@ defmodule ZipLinerWeb.ProjectController do
 
   def delete(conn, %{"id" => id}) do
     project = Projects.get_project!(id)
+    current_member = conn.assigns.current_member
 
-    if project.owner_id != conn.assigns.current_member.id do
+    if current_member.id != project.owner_id && !current_member.is_admin do
       conn
       |> put_flash(:error, "You can only delete your own projects.")
       |> redirect(to: ~p"/projects")
