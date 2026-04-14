@@ -17,6 +17,7 @@
     hx-target={"#post-#{@post.id}-replies"}
     hx-swap="innerHTML"
     hx-headers={Jason.encode!(%{"x-csrf-token" => get_csrf_token()})}
+    hx-on::after-request="if(event.detail.successful) this.reset()"
     class="d-flex gap-2 mt-2"
   >
     <textarea name="reply[content]" placeholder="Write a reply…" rows="2" maxlength="1000" class="form-control form-control-sm"></textarea>
