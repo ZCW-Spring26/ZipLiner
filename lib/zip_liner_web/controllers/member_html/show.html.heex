@@ -1,5 +1,5 @@
-<div class="d-flex gap-4">
-  <aside style="width: 18rem; flex-shrink: 0;">
+<div class="row g-4">
+  <aside class="col-12 col-md-5 col-lg-4">
     <div class="card p-4 text-center mb-3">
       <img src={@member.github_avatar_url} alt={@member.display_name} class="avatar-lg mx-auto mb-3 d-block" />
 
@@ -69,10 +69,10 @@
     </div>
   </aside>
 
-  <main class="flex-grow-1">
+  <div class="col-12 col-md-7 col-lg-8">
     <section>
       <h2 class="h5 fw-semibold mb-3">Projects</h2>
       <a href={~p"/projects?owner_id=#{@member.id}"} class="btn btn-outline-secondary btn-sm">View Projects</a>
     </section>
-  </main>
+  </div>
 </div>

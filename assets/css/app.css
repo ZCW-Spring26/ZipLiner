@@ -42,3 +42,23 @@
 .status-completed            { background-color: #dcfce7; color: #166534; }
 .status-archived             { background-color: #f3f4f6; color: #6b7280; }
 .status-looking_for_collaborators { background-color: #dbeafe; color: #1e40af; }
+
+/* --- Responsive helpers ----------------------------------- */
+
+/* Reduce main content padding on small screens */
+@media (max-width: 575.98px) {
+  main.container-xl {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+  }
+
+  /* Ensure messages container is usable on small screens */
+  .messages-container {
+    height: 18rem;
+  }
+
+  /* Prevent reaction button row from overflowing */
+  .card-footer.d-flex {
+    flex-wrap: wrap;
+  }
+}

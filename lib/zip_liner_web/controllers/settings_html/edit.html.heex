@@ -1,6 +1,6 @@
 <h1 class="h3 mb-4">Settings</h1>
 
-<form method="post" action={~p"/settings"} class="row g-3" style="max-width: 600px;">
+<form method="post" action={~p"/settings"} class="row g-3 w-100" style="max-width: 600px;">
   <input type="hidden" name="_csrf_token" value={get_csrf_token()} />
   <input type="hidden" name="_method" value="put" />
 
@@ -63,9 +63,9 @@
   </div>
 </form>
 
-<hr class="my-5" style="max-width: 600px;" />
+<hr class="my-5 w-100" style="max-width: 600px;" />
 
-<section style="max-width: 600px;">
+<section class="w-100" style="max-width: 600px;">
   <h2 class="h5 fw-semibold mb-3">Sign Out</h2>
   <form method="post" action={~p"/auth/logout"}>
     <input type="hidden" name="_csrf_token" value={get_csrf_token()} />

@@ -1,6 +1,6 @@
 <h1 class="h3 mb-4">Edit Profile</h1>
 
-<form method="post" action={~p"/members/#{@member.id}"} class="row g-3" style="max-width: 600px;">
+<form method="post" action={~p"/members/#{@member.id}"} class="row g-3 w-100" style="max-width: 600px;">
   <input type="hidden" name="_csrf_token" value={get_csrf_token()} />
   <input type="hidden" name="_method" value="put" />
 
