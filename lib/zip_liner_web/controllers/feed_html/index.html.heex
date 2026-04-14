@@ -54,64 +54,12 @@
 
     <section id="feed-posts">
       <%= for post <- @posts do %>
-        <article class="card mb-3" id={"post-#{post.id}"}>
-          <div class="card-header d-flex align-items-center gap-2 bg-white">
-            <img
-              src={post.author.github_avatar_url}
-              alt={post.author.display_name}
-              class="avatar-sm"
-            />
-            <div>
-              <a href={~p"/members/#{post.author.id}"} class="fw-semibold text-decoration-none text-dark"><%= post.author.display_name %></a>
-              <span class="badge text-bg-secondary ms-1"><%= post.type %></span>
-              <br />
-              <time class="small text-muted" datetime={DateTime.to_iso8601(post.inserted_at)}>
-                <%= Calendar.strftime(post.inserted_at, "%b %d, %Y") %>
-              </time>
-            </div>
-          </div>
-          <div class="card-body">
-            <p class="mb-0" style="white-space: pre-wrap;"><%= post.content %></p>
-          </div>
-          <div class="card-footer d-flex gap-2 bg-white">
-            <button
-              class="react-btn"
-              hx-post={~p"/posts/#{post.id}/react"}
-              hx-vals='{"kind": "thumbs_up"}'
-              hx-target={"#post-#{post.id}"}
-              hx-swap="outerHTML"
-            >👍</button>
-            <button
-              class="react-btn"
-              hx-post={~p"/posts/#{post.id}/react"}
-              hx-vals='{"kind": "fire"}'
-              hx-target={"#post-#{post.id}"}
-              hx-swap="outerHTML"
-            >🔥</button>
-            <button
-              class="react-btn"
-              hx-post={~p"/posts/#{post.id}/react"}
-              hx-vals='{"kind": "lightbulb"}'
-              hx-target={"#post-#{post.id}"}
-              hx-swap="outerHTML"
-            >💡</button>
-            <button
-              class="react-btn"
-              hx-post={~p"/posts/#{post.id}/react"}
-              hx-vals='{"kind": "celebrate"}'
-              hx-target={"#post-#{post.id}"}
-              hx-swap="outerHTML"
-            >🎉</button>
-            <a
-              href={~p"/posts/#{post.id}"}
-              hx-get={~p"/posts/#{post.id}"}
-              hx-target={"#post-#{post.id}-replies"}
-              hx-swap="innerHTML"
-              class="btn btn-sm btn-outline-secondary"
-            >Reply</a>
-          </div>
-          <div id={"post-#{post.id}-replies"}></div>
-        </article>
+        <ZipLinerWeb.PostHTML.post_card
+          post={post}
+          current_member={@current_member}
+          reactions={Map.get(@reaction_counts, post.id, %{thumbs_up: 0, fire: 0, lightbulb: 0, celebrate: 0})}
+          my_reactions={Map.get(@my_reactions, post.id, [])}
+        />
       <% end %>
     </section>
   </main>
