@@ -19,7 +19,7 @@
         </div>
       </div>
       <div class="card-body">
-        <p class="mb-0" style="white-space: pre-wrap;"><%= post.content %></p>
+        <div class="mb-0 markdown-body"><%= ZipLiner.Markdown.to_html(post.content) %></div>
       </div>
     </article>
   <% end %>

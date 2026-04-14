@@ -46,6 +46,9 @@ defmodule ZipLiner.MixProject do
       # Authentication
       {:ueberauth, "~> 0.10"},
       {:ueberauth_github, "~> 0.8"},
+      # Markdown rendering
+      {:earmark, "~> 1.4"},
+      {:html_sanitize_ex, "~> 1.4"},
       # Testing
       {:floki, ">= 0.30.0", only: :test}
     ]
