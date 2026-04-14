@@ -39,7 +39,7 @@
       <% end %>
     </div>
 
-    <%= if @current_member.id == @project.owner_id do %>
+    <%= if @current_member.id == @project.owner_id || @current_member.is_admin do %>
       <div class="d-flex gap-2 pt-3 border-top">
         <a href={~p"/projects/#{@project.id}/edit"} class="btn btn-outline-secondary btn-sm">Edit</a>
         <form method="post" action={~p"/projects/#{@project.id}"} class="d-inline m-0">

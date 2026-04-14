@@ -4,6 +4,7 @@ defmodule ZipLiner.AccountsFixtures do
   """
 
   alias ZipLiner.Accounts
+  alias ZipLiner.Repo
 
   def cohort_attrs(attrs \\ %{}) do
     Enum.into(attrs, %{
@@ -34,11 +35,22 @@ defmodule ZipLiner.AccountsFixtures do
   end
 
   def member_fixture(attrs \\ %{}) do
+    {is_admin, attrs} = Map.pop(attrs, :is_admin, false)
+
     {:ok, member} =
       attrs
       |> member_attrs()
       |> Accounts.create_member()
 
-    member
+    if is_admin do
+      {:ok, member} =
+        member
+        |> Ecto.Changeset.change(%{is_admin: true})
+        |> Repo.update()
+
+      member
+    else
+      member
+    end
   end
 end

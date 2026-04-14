@@ -20,6 +20,7 @@ defmodule ZipLiner.Projects do
     Project
     |> where([p], p.owner_id == ^member_id)
     |> order_by([p], desc: p.inserted_at)
+    |> preload(:owner)
     |> Repo.all()
   end
 
