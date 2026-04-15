@@ -20,6 +20,15 @@ document.addEventListener("DOMContentLoaded", () => {
   // Enable HTMX history support.
   htmx.config.historyCacheSize = 10;
 
+  // Auto-scroll the messages container to the latest message on page load and
+  // after every HTMX swap (periodic polling and post-send updates).
+  const messagesContainer = document.getElementById("messages-container");
+  if (messagesContainer) {
+    const scrollToBottom = () => { messagesContainer.scrollTop = messagesContainer.scrollHeight; };
+    scrollToBottom();
+    messagesContainer.addEventListener("htmx:afterSettle", scrollToBottom);
+  }
+
   // Fallback hamburger toggle in case Bootstrap JS doesn't initialize correctly.
   // Only activates if Bootstrap's Collapse API is unavailable.
   // DOMContentLoaded fires after all deferred scripts (including Bootstrap), so this
