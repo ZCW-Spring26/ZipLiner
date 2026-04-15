@@ -65,4 +65,51 @@ defmodule ZipLiner.MarkdownTest do
       assert {:safe, _} = Markdown.to_html("hello")
     end
   end
+
+  describe "autolink/1" do
+    test "converts a bare http URL to an anchor tag" do
+      result = Markdown.autolink("Visit https://example.com for details")
+      assert {:safe, html} = result
+      assert html =~ ~s(<a href="https://example.com")
+      assert html =~ ~s(target="_blank")
+      assert html =~ ~s(rel="noopener noreferrer")
+    end
+
+    test "converts a LinkedIn URL to an anchor tag" do
+      result = Markdown.autolink("My profile: https://www.linkedin.com/in/testuser")
+      assert {:safe, html} = result
+      assert html =~ ~s(<a href="https://www.linkedin.com/in/testuser")
+    end
+
+    test "plain text without URLs is HTML-escaped and returned safely" do
+      result = Markdown.autolink("Hello, <world> & \"friends\"")
+      assert {:safe, html} = result
+      refute html =~ "<world>"
+      assert html =~ "Hello,"
+    end
+
+    test "returns an empty safe string for nil" do
+      assert {:safe, ""} = Markdown.autolink(nil)
+    end
+
+    test "text with no URLs is returned as plain escaped HTML" do
+      result = Markdown.autolink("No links here")
+      assert {:safe, html} = result
+      assert html =~ "No links here"
+      refute html =~ "<a"
+    end
+
+    test "does not include trailing sentence punctuation in the URL" do
+      result = Markdown.autolink("See https://example.com for info.")
+      assert {:safe, html} = result
+      assert html =~ ~s(href="https://example.com")
+      refute html =~ ~s(href="https://example.com.")
+    end
+
+    test "does not create anchor tags for non-http schemes" do
+      result = Markdown.autolink("ftp://example.com")
+      assert {:safe, html} = result
+      refute html =~ "<a"
+    end
+  end
 end

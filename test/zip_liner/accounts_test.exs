@@ -98,6 +98,24 @@ defmodule ZipLiner.AccountsTest do
       assert updated.bio == "Hello world"
     end
 
+    test "update_member/2 saves a valid linkedin_url" do
+      member = member_fixture()
+      {:ok, updated} = Accounts.update_member(member, %{linkedin_url: "https://www.linkedin.com/in/testuser"})
+      assert updated.linkedin_url == "https://www.linkedin.com/in/testuser"
+    end
+
+    test "update_member/2 rejects an invalid linkedin_url" do
+      member = member_fixture()
+      assert {:error, changeset} = Accounts.update_member(member, %{linkedin_url: "not-a-url"})
+      assert %{linkedin_url: ["must be a valid http or https URL"]} = errors_on(changeset)
+    end
+
+    test "update_member/2 accepts nil linkedin_url" do
+      member = member_fixture()
+      {:ok, updated} = Accounts.update_member(member, %{linkedin_url: nil})
+      assert updated.linkedin_url == nil
+    end
+
     test "change_member/2 returns a changeset" do
       member = member_fixture()
       assert %Ecto.Changeset{} = Accounts.change_member(member)

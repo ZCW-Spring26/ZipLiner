@@ -66,6 +66,24 @@ defmodule ZipLiner.Accounts.Member do
     |> unique_constraint(:github_username)
     |> validate_length(:display_name, max: 100)
     |> validate_length(:bio, max: 280)
+    |> validate_url(:linkedin_url)
+  end
+
+  defp validate_url(changeset, field) do
+    validate_change(changeset, field, fn _, value ->
+      if is_nil(value) or value == "" do
+        []
+      else
+        case URI.parse(value) do
+          %URI{scheme: scheme, host: host}
+          when scheme in ["http", "https"] and is_binary(host) and host != "" ->
+            []
+
+          _ ->
+            [{field, "must be a valid http or https URL"}]
+        end
+      end
+    end)
   end
 
   def github_oauth_changeset(member, attrs) do

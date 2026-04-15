@@ -20,7 +20,7 @@
         <p class="small mb-2 text-muted">📍 <%= @member.location %></p>
       <% end %>
       <%= if @member.bio do %>
-        <p class="small text-secondary mb-2"><%= @member.bio %></p>
+        <p class="small text-secondary mb-2"><%= ZipLiner.Markdown.autolink(@member.bio) %></p>
       <% end %>
 
       <%= if @member.open_to_opportunities do %>
