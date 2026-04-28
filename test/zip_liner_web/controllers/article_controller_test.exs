@@ -103,6 +103,19 @@ defmodule ZipLinerWeb.ArticleControllerTest do
       conn = get(conn, ~p"/articles/#{article.id}")
       refute html_response(conn, 200) =~ "Delete"
     end
+
+    test "owner sees edit button", %{conn: conn, member: member} do
+      article = BlogFixtures.article_fixture(member.id)
+      conn = get(conn, ~p"/articles/#{article.id}")
+      assert html_response(conn, 200) =~ "Edit"
+    end
+
+    test "non-owner does not see edit button", %{conn: conn} do
+      other = AccountsFixtures.member_fixture()
+      article = BlogFixtures.article_fixture(other.id)
+      conn = get(conn, ~p"/articles/#{article.id}")
+      refute html_response(conn, 200) =~ "Edit"
+    end
   end
 
   describe "show — unauthenticated access" do
@@ -126,6 +139,91 @@ defmodule ZipLinerWeb.ArticleControllerTest do
       article = BlogFixtures.article_fixture(member.id, %{visibility: "public"})
       conn = get(conn, ~p"/articles/#{article.id}")
       refute html_response(conn, 200) =~ "Add a Comment"
+    end
+  end
+
+  describe "edit" do
+    setup :log_in_member
+
+    test "renders edit form for owner", %{conn: conn, member: member} do
+      article = BlogFixtures.article_fixture(member.id, %{title: "My Article"})
+      conn = get(conn, ~p"/articles/#{article.id}/edit")
+      assert html_response(conn, 200) =~ "Edit Article"
+      assert html_response(conn, 200) =~ "My Article"
+    end
+
+    test "redirects non-owner away from edit", %{conn: conn} do
+      other = AccountsFixtures.member_fixture()
+      article = BlogFixtures.article_fixture(other.id)
+      conn = get(conn, ~p"/articles/#{article.id}/edit")
+      assert redirected_to(conn) == ~p"/articles/#{article.id}"
+      assert Phoenix.Flash.get(conn.assigns.flash, :error) =~ "only edit your own"
+    end
+
+    test "admin can edit any article", %{conn: conn} do
+      admin = AccountsFixtures.member_fixture(%{is_admin: true})
+      other = AccountsFixtures.member_fixture()
+      article = BlogFixtures.article_fixture(other.id)
+
+      conn = log_in_member(conn, admin)
+      conn = get(conn, ~p"/articles/#{article.id}/edit")
+      assert html_response(conn, 200) =~ "Edit Article"
+    end
+  end
+
+  describe "update" do
+    setup :log_in_member
+
+    test "owner can update article", %{conn: conn, member: member} do
+      article = BlogFixtures.article_fixture(member.id)
+
+      conn =
+        patch(conn, ~p"/articles/#{article.id}", %{
+          "article" => %{"title" => "Updated Title", "body" => "Updated body", "visibility" => "private"}
+        })
+
+      assert redirected_to(conn) == ~p"/articles/#{article.id}"
+      assert Phoenix.Flash.get(conn.assigns.flash, :info) =~ "updated"
+    end
+
+    test "non-owner cannot update article", %{conn: conn} do
+      other = AccountsFixtures.member_fixture()
+      article = BlogFixtures.article_fixture(other.id)
+
+      conn =
+        patch(conn, ~p"/articles/#{article.id}", %{
+          "article" => %{"title" => "Hijacked", "body" => "Hijacked body", "visibility" => "private"}
+        })
+
+      assert redirected_to(conn) == ~p"/articles/#{article.id}"
+      assert Phoenix.Flash.get(conn.assigns.flash, :error) =~ "only edit your own"
+    end
+
+    test "admin can update any article", %{conn: conn} do
+      admin = AccountsFixtures.member_fixture(%{is_admin: true})
+      other = AccountsFixtures.member_fixture()
+      article = BlogFixtures.article_fixture(other.id)
+
+      conn = log_in_member(conn, admin)
+
+      conn =
+        patch(conn, ~p"/articles/#{article.id}", %{
+          "article" => %{"title" => "Admin Updated", "body" => "Admin body", "visibility" => "private"}
+        })
+
+      assert redirected_to(conn) == ~p"/articles/#{article.id}"
+      assert Phoenix.Flash.get(conn.assigns.flash, :info) =~ "updated"
+    end
+
+    test "renders errors when title is blank", %{conn: conn, member: member} do
+      article = BlogFixtures.article_fixture(member.id)
+
+      conn =
+        patch(conn, ~p"/articles/#{article.id}", %{
+          "article" => %{"title" => "", "body" => "Some body", "visibility" => "private"}
+        })
+
+      assert html_response(conn, 200) =~ "Edit Article"
     end
   end
 

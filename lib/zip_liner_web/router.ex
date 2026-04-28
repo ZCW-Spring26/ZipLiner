@@ -68,8 +68,9 @@ defmodule ZipLinerWeb.Router do
     # That scope is placed AFTER this one so that GET /articles/new is matched here
     # first, not treated as :id = "new".
     # Access control (private vs public visibility) is enforced inside the action.
-    resources "/articles", ArticleController, only: [:index, :new, :create, :delete]
+    resources "/articles", ArticleController, only: [:index, :new, :create, :edit, :update, :delete]
     post "/articles/:article_id/comments", ArticleCommentController, :create
+    patch "/articles/:article_id/comments/:id", ArticleCommentController, :update
     delete "/articles/:article_id/comments/:id", ArticleCommentController, :delete
 
     resources "/forums", ForumController, only: [:index, :new, :create, :show, :edit, :update, :delete]

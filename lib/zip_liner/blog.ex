@@ -75,6 +75,13 @@ defmodule ZipLiner.Blog do
     Article.changeset(article, attrs)
   end
 
+  @doc "Updates an article."
+  def update_article(%Article{} = article, attrs) do
+    article
+    |> Article.changeset(attrs)
+    |> Repo.update()
+  end
+
   @doc "Deletes an article."
   def delete_article(%Article{} = article) do
     Repo.delete(article)
@@ -118,6 +125,13 @@ defmodule ZipLiner.Blog do
   @doc "Deletes an article comment."
   def delete_comment(%ArticleComment{} = comment) do
     Repo.delete(comment)
+  end
+
+  @doc "Updates an article comment."
+  def update_comment(%ArticleComment{} = comment, attrs) do
+    comment
+    |> ArticleComment.changeset(attrs)
+    |> Repo.update()
   end
 
   # ---------------------------------------------------------------------------
