@@ -55,6 +55,13 @@ defmodule ZipLiner.Forums do
     ForumThread.changeset(thread, attrs)
   end
 
+  @doc "Updates a forum thread."
+  def update_thread(%ForumThread{} = thread, attrs) do
+    thread
+    |> ForumThread.changeset(attrs)
+    |> Repo.update()
+  end
+
   @doc "Deletes a forum thread."
   def delete_thread(%ForumThread{} = thread) do
     Repo.delete(thread)
@@ -94,6 +101,13 @@ defmodule ZipLiner.Forums do
 
   @doc "Gets a single forum comment. Raises if not found."
   def get_comment!(id), do: Repo.get!(ForumComment, id)
+
+  @doc "Updates a forum comment."
+  def update_comment(%ForumComment{} = comment, attrs) do
+    comment
+    |> ForumComment.changeset(attrs)
+    |> Repo.update()
+  end
 
   @doc "Deletes a forum comment."
   def delete_comment(%ForumComment{} = comment) do

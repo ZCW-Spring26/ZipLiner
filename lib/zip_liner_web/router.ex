@@ -74,8 +74,9 @@ defmodule ZipLinerWeb.Router do
     post "/articles/:article_id/comments", ArticleCommentController, :create
     delete "/articles/:article_id/comments/:id", ArticleCommentController, :delete
 
-    resources "/forums", ForumController, only: [:index, :new, :create, :show, :delete]
+    resources "/forums", ForumController, only: [:index, :new, :create, :show, :edit, :update, :delete]
     post "/forums/:forum_id/comments", ForumCommentController, :create
+    patch "/forums/:forum_id/comments/:id", ForumCommentController, :update
     delete "/forums/:forum_id/comments/:id", ForumCommentController, :delete
 
     get "/messages", MessageController, :index

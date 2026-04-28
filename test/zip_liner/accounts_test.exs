@@ -98,6 +98,12 @@ defmodule ZipLiner.AccountsTest do
       assert updated.bio == "Hello world"
     end
 
+    test "update_member/2 updates theme_preference" do
+      member = member_fixture()
+      {:ok, updated} = Accounts.update_member(member, %{theme_preference: :dark})
+      assert updated.theme_preference == :dark
+    end
+
     test "update_member/2 saves a valid linkedin_url" do
       member = member_fixture()
       {:ok, updated} = Accounts.update_member(member, %{linkedin_url: "https://www.linkedin.com/in/testuser"})
