@@ -46,7 +46,7 @@
           </div>
           <div class="d-flex align-items-center gap-2">
             <%= if article.visibility == :pinned do %>
-              <span class="badge text-bg-warning"><span aria-hidden="true">📌</span> Pinned</span>
+              <span class="badge text-bg-warning" aria-label="Pinned article"><span aria-hidden="true">📌</span> Pinned</span>
             <% else %>
               <%= if article.visibility == :public do %>
                 <span class="badge text-bg-success">Public</span>
