@@ -4,6 +4,7 @@ defmodule ZipLiner.Accounts.Member do
 
   @roles ~w(student alumni instructor staff mentor guest)a
   @statuses ~w(active suspended deprovisioned)a
+  @theme_preferences ~w(light dark)a
   @admin_handles ~w(kristofer)
 
   schema "members" do
@@ -21,6 +22,7 @@ defmodule ZipLiner.Accounts.Member do
     field :status, Ecto.Enum, values: @statuses, default: :active
     field :is_admin, :boolean, default: false
     field :open_to_opportunities, :boolean, default: false
+    field :theme_preference, Ecto.Enum, values: @theme_preferences, default: :light
     field :skills, {:array, :string}, default: []
     field :avatar_source, Ecto.Enum, values: [:github, :linkedin], default: :github
 
@@ -57,6 +59,7 @@ defmodule ZipLiner.Accounts.Member do
       :role,
       :status,
       :open_to_opportunities,
+      :theme_preference,
       :skills,
       :avatar_source,
       :cohort_id
