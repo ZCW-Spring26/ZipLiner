@@ -1,0 +1,54 @@
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h1 class="h3 mb-0">Projects (Admin)</h1>
+  <a href={~p"/admin/projects/new"} class="btn btn-primary btn-sm">New Project</a>
+</div>
+
+<div class="table-responsive">
+  <table class="table table-striped table-hover align-middle">
+    <thead class="table-light">
+      <tr>
+        <th>Name</th>
+        <th>Owner</th>
+        <th>Status</th>
+        <th>Created</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <%= for project <- @projects do %>
+        <tr>
+          <td>
+            <a href={~p"/admin/projects/#{project.id}"} class="text-decoration-none fw-medium">
+              <%= project.name %>
+            </a>
+          </td>
+          <td class="text-muted small">
+            <%= if project.owner do %>
+              <a href={~p"/admin/members/#{project.owner_id}"} class="text-decoration-none">
+                <%= project.owner.display_name %>
+              </a>
+            <% else %>
+              –
+            <% end %>
+          </td>
+          <td><span class="badge text-bg-secondary"><%= project.status %></span></td>
+          <td class="text-muted small"><%= Calendar.strftime(project.inserted_at, "%b %d, %Y") %></td>
+          <td>
+            <a href={~p"/admin/projects/#{project.id}/edit"} class="btn btn-sm btn-outline-secondary me-1">Edit</a>
+            <form method="post" action={~p"/admin/projects/#{project.id}"} class="d-inline m-0">
+              <input type="hidden" name="_csrf_token" value={get_csrf_token()} />
+              <input type="hidden" name="_method" value="delete" />
+              <button
+                type="submit"
+                onclick="return confirm('Delete this project?')"
+                class="btn btn-sm btn-outline-danger"
+              >
+                Delete
+              </button>
+            </form>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>

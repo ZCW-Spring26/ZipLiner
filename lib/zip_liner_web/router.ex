@@ -108,8 +108,16 @@ defmodule ZipLinerWeb.Router do
     pipe_through [:browser, :require_auth]
 
     resources "/cohorts", CohortController
-    resources "/members", MemberController, only: [:index, :show, :edit, :update, :delete]
+    resources "/members", MemberController, only: [:index, :new, :create, :show, :edit, :update, :delete]
+    resources "/projects", ProjectController, except: [:delete]
+    delete "/projects/:id", ProjectController, :delete
+
     resources "/allowed_handles", AllowedHandleController, only: [:index, :create, :delete]
+    resources "/blacklisted_handles", BlacklistedHandleController, only: [:index, :create, :delete]
+
+    resources "/join_requests", JoinRequestController, only: [:index]
+    post "/join_requests/:id/approve", JoinRequestController, :approve
+    post "/join_requests/:id/deny", JoinRequestController, :deny
   end
 
   # ---------------------------------------------------------------------------
