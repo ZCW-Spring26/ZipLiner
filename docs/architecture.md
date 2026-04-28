@@ -417,6 +417,31 @@ A comment on a post.
 
 ---
 
+#### `Article` (`blog/article.ex`)
+
+A long-form personal blog post written by a member.
+
+| Field | Type | Notes |
+|---|---|---|
+| `title` | string | Max 200 chars |
+| `body` | string | Markdown-formatted content, max 50 000 chars |
+| `visibility` | enum | `private` (authenticated ZipLiner members only) or `public` (anyone with the link) |
+| `author_id` | FK → Member | |
+
+---
+
+#### `ArticleComment` (`blog/article_comment.ex`)
+
+A comment left by a member on a long-form article.
+
+| Field | Type | Notes |
+|---|---|---|
+| `body` | string | Markdown-formatted content, max 5 000 chars |
+| `article_id` | FK → Article | |
+| `author_id` | FK → Member | |
+
+---
+
 #### `Project` (`projects/project.ex`)
 
 A project that a member has built or is building.
