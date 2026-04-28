@@ -34,6 +34,41 @@ defmodule ZipLinerWeb.ForumController do
     render(conn, :show, thread: thread, comment_changeset: comment_changeset)
   end
 
+  def edit(conn, %{"id" => id}) do
+    thread = Forums.get_thread!(id)
+
+    if thread.author_id != conn.assigns.current_member.id and
+         not conn.assigns.current_member.is_admin do
+      conn
+      |> put_flash(:error, "You can only edit your own threads.")
+      |> redirect(to: ~p"/forums/#{id}")
+    else
+      changeset = Forums.change_thread(thread)
+      render(conn, :edit, thread: thread, changeset: changeset)
+    end
+  end
+
+  def update(conn, %{"id" => id, "forum_thread" => thread_params}) do
+    thread = Forums.get_thread!(id)
+
+    if thread.author_id != conn.assigns.current_member.id and
+         not conn.assigns.current_member.is_admin do
+      conn
+      |> put_flash(:error, "You can only edit your own threads.")
+      |> redirect(to: ~p"/forums/#{id}")
+    else
+      case Forums.update_thread(thread, thread_params) do
+        {:ok, updated_thread} ->
+          conn
+          |> put_flash(:info, "Thread updated successfully.")
+          |> redirect(to: ~p"/forums/#{updated_thread.id}")
+
+        {:error, changeset} ->
+          render(conn, :edit, thread: thread, changeset: changeset)
+      end
+    end
+  end
+
   def delete(conn, %{"id" => id}) do
     thread = Forums.get_thread!(id)
 

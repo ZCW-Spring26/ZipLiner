@@ -249,4 +249,44 @@ defmodule ZipLiner.Social do
     |> order_by([dm], asc: dm.inserted_at)
     |> Repo.all()
   end
+
+  @doc """
+  Returns a metadata map for the conversation between `current_member_id` and
+  `other_member_id`:
+
+    * `:total_count`   – total number of messages in the conversation
+    * `:unread_count`  – messages sent *to* current_member that have no `read_at`
+    * `:last_message_at` – `inserted_at` of the most-recent message, or `nil`
+    * `:last_sender_id`  – `sender_id` of the most-recent message, or `nil`
+  """
+  def get_conversation_metadata(current_member_id, other_member_id) do
+    base_query =
+      DirectMessage
+      |> where(
+        [dm],
+        (dm.sender_id == ^current_member_id and dm.recipient_id == ^other_member_id) or
+          (dm.sender_id == ^other_member_id and dm.recipient_id == ^current_member_id)
+      )
+
+    total_count = Repo.aggregate(base_query, :count, :id)
+
+    unread_count =
+      base_query
+      |> where([dm], dm.recipient_id == ^current_member_id and is_nil(dm.read_at))
+      |> Repo.aggregate(:count, :id)
+
+    last_message =
+      base_query
+      |> order_by([dm], desc: dm.inserted_at)
+      |> limit(1)
+      |> select([dm], %{inserted_at: dm.inserted_at, sender_id: dm.sender_id})
+      |> Repo.one()
+
+    %{
+      total_count: total_count,
+      unread_count: unread_count,
+      last_message_at: last_message && last_message.inserted_at,
+      last_sender_id: last_message && last_message.sender_id
+    }
+  end
 end

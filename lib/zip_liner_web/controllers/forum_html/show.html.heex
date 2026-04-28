@@ -15,6 +15,7 @@
       </time>
     </div>
     <%= if @current_member.id == @thread.author_id or @current_member.is_admin do %>
+      <a href={~p"/forums/#{@thread.id}/edit"} class="btn btn-sm btn-outline-secondary">Edit</a>
       <form method="post" action={~p"/forums/#{@thread.id}"} class="d-inline m-0">
         <input type="hidden" name="_csrf_token" value={get_csrf_token()} />
         <input type="hidden" name="_method" value="delete" />
@@ -51,17 +52,48 @@
                 <%= Calendar.strftime(comment.inserted_at, "%b %d, %Y") %>
               </time>
               <%= if @current_member.id == comment.author_id or @current_member.is_admin do %>
-                <form method="post" action={~p"/forums/#{@thread.id}/comments/#{comment.id}"} class="d-inline m-0">
-                  <input type="hidden" name="_csrf_token" value={get_csrf_token()} />
-                  <input type="hidden" name="_method" value="delete" />
-                  <button type="submit" class="btn btn-sm btn-link text-danger p-0"
-                    onclick="return confirm('Delete this comment?')">Delete</button>
-                </form>
+                <div class="d-flex align-items-center gap-2">
+                  <button
+                    type="button"
+                    class="btn btn-sm btn-link text-secondary p-0"
+                    onclick={"document.getElementById('edit-form-#{comment.id}').classList.toggle('d-none'); document.getElementById('comment-body-#{comment.id}').classList.toggle('d-none');"}
+                  >Edit</button>
+                  <form method="post" action={~p"/forums/#{@thread.id}/comments/#{comment.id}"} class="d-inline m-0">
+                    <input type="hidden" name="_csrf_token" value={get_csrf_token()} />
+                    <input type="hidden" name="_method" value="delete" />
+                    <button type="submit" class="btn btn-sm btn-link text-danger p-0"
+                      onclick="return confirm('Delete this comment?')">Delete</button>
+                  </form>
+                </div>
               <% end %>
             </div>
           </div>
           <div class="card-body py-2">
-            <div class="markdown-body small"><%= ZipLiner.Markdown.to_html(comment.body) %></div>
+            <div id={"comment-body-#{comment.id}"} class="markdown-body small"><%= ZipLiner.Markdown.to_html(comment.body) %></div>
+            <form
+              id={"edit-form-#{comment.id}"}
+              class="d-none"
+              method="post"
+              action={~p"/forums/#{@thread.id}/comments/#{comment.id}"}
+            >
+              <input type="hidden" name="_csrf_token" value={get_csrf_token()} />
+              <input type="hidden" name="_method" value="patch" />
+              <textarea
+                name="forum_comment[body]"
+                rows="4"
+                maxlength="5000"
+                class="form-control form-control-sm mb-2"
+                required
+              ><%= comment.body %></textarea>
+              <div class="d-flex gap-2">
+                <button type="submit" class="btn btn-sm btn-primary">Save</button>
+                <button
+                  type="button"
+                  class="btn btn-sm btn-outline-secondary"
+                  onclick={"document.getElementById('edit-form-#{comment.id}').classList.add('d-none'); document.getElementById('comment-body-#{comment.id}').classList.remove('d-none');"}
+                >Cancel</button>
+              </div>
+            </form>
           </div>
         </div>
       </div>

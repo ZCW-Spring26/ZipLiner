@@ -20,6 +20,29 @@ defmodule ZipLinerWeb.ForumCommentController do
     end
   end
 
+  def update(conn, %{"forum_id" => thread_id, "id" => comment_id, "forum_comment" => comment_params}) do
+    comment = Forums.get_comment!(comment_id)
+
+    if comment.author_id != conn.assigns.current_member.id and
+         not conn.assigns.current_member.is_admin do
+      conn
+      |> put_flash(:error, "You can only edit your own comments.")
+      |> redirect(to: ~p"/forums/#{thread_id}")
+    else
+      case Forums.update_comment(comment, comment_params) do
+        {:ok, _comment} ->
+          conn
+          |> put_flash(:info, "Comment updated.")
+          |> redirect(to: ~p"/forums/#{thread_id}#comment-#{comment_id}")
+
+        {:error, _changeset} ->
+          conn
+          |> put_flash(:error, "Could not update comment.")
+          |> redirect(to: ~p"/forums/#{thread_id}#comment-#{comment_id}")
+      end
+    end
+  end
+
   def delete(conn, %{"forum_id" => thread_id, "id" => comment_id}) do
     comment = Forums.get_comment!(comment_id)
 

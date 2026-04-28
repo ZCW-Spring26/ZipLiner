@@ -4,11 +4,28 @@
   <%= if @connected_members == [] do %>
     <p class="text-muted">You have no connections yet. <a href={~p"/members"}>Find people to connect with.</a></p>
   <% else %>
-    <div class="list-group" style="max-width: 480px;">
+    <div class="list-group" style="max-width: 560px;">
       <%= for member <- @connected_members do %>
+        <% meta = Map.get(@metadata, member.id, %{total_count: 0, unread_count: 0, last_message_at: nil, last_sender_id: nil}) %>
         <a href={~p"/messages/#{member.id}"} class="list-group-item list-group-item-action d-flex align-items-center gap-3 py-3">
-          <img src={member.github_avatar_url} alt={member.display_name} class="avatar-sm" />
-          <span class="fw-medium"><%= member.display_name %></span>
+          <img src={member.github_avatar_url} alt={member.display_name} class="avatar-sm flex-shrink-0" />
+          <div class="flex-grow-1 min-width-0">
+            <div class="d-flex justify-content-between align-items-baseline">
+              <span class="fw-medium"><%= member.display_name %></span>
+              <%= if meta.last_message_at do %>
+                <% is_sender = meta.last_sender_id == @current_member.id %>
+                <small style={"color: #{if is_sender, do: "#0d6efd", else: "#198754"}; white-space: nowrap; margin-left: 0.5rem;"}>
+                  <%= Calendar.strftime(meta.last_message_at, "%b %d, %H:%M") %>
+                </small>
+              <% end %>
+            </div>
+            <div class="d-flex align-items-center gap-2 mt-1">
+              <small class="text-muted"><%= meta.total_count %> <%= if meta.total_count == 1, do: "message", else: "messages" %></small>
+              <%= if meta.unread_count > 0 do %>
+                <span class="badge rounded-pill text-bg-success"><%= meta.unread_count %> unread</span>
+              <% end %>
+            </div>
+          </div>
         </a>
       <% end %>
     </div>
