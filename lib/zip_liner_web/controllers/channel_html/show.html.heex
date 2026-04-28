@@ -1,26 +1,74 @@
-<div class="mb-4 pb-3 border-bottom">
-  <h1 class="h4 fw-bold mb-1">#<%= @channel.name %></h1>
-  <%= if @channel.description do %>
-    <p class="text-muted mb-0"><%= @channel.description %></p>
+<div class="mb-4">
+  <a href={~p"/channels"} class="text-decoration-none text-muted small">← All Blogs</a>
+</div>
+
+<div class="d-flex align-items-center gap-3 mb-4 pb-3 border-bottom">
+  <img src={@member.github_avatar_url} alt={@member.display_name} class="avatar flex-shrink-0" />
+  <div class="flex-grow-1">
+    <h1 class="h4 fw-bold mb-1">
+      <%= if @member.blog_title do %>
+        <%= @member.blog_title %>
+      <% else %>
+        <%= @member.display_name %>'s Blog
+      <% end %>
+    </h1>
+    <div class="small text-muted">
+      by <a href={~p"/members/#{@member.id}"} class="text-decoration-none"><%= @member.display_name %></a>
+    </div>
+  </div>
+  <%= if @current_member && @current_member.id == @member.id do %>
+    <div class="ms-auto">
+      <a href={~p"/articles/new"} class="btn btn-primary btn-sm">Write a Post</a>
+    </div>
   <% end %>
 </div>
 
-<div id="channel-posts">
-  <%= for post <- @posts do %>
-    <article class="card mb-3" id={"post-#{post.id}"}>
-      <div class="card-header d-flex align-items-center gap-2 bg-white">
-        <img src={post.author.github_avatar_url} alt={post.author.display_name} class="avatar-sm" />
-        <div>
-          <a href={~p"/members/#{post.author.id}"} class="fw-semibold text-decoration-none text-dark"><%= post.author.display_name %></a>
-          <br />
-          <time class="small text-muted" datetime={DateTime.to_iso8601(post.inserted_at)}>
-            <%= Calendar.strftime(post.inserted_at, "%b %d, %Y") %>
-          </time>
+<div id="blog-articles">
+  <%= if @articles == [] do %>
+    <div class="text-center text-muted py-5">
+      <p class="mb-2">No published posts yet.</p>
+      <%= if @current_member && @current_member.id == @member.id do %>
+        <a href={~p"/articles/new"} class="btn btn-outline-primary btn-sm">Write your first post</a>
+      <% end %>
+    </div>
+  <% else %>
+    <%= for article <- @articles do %>
+      <article class="card mb-3" id={"article-#{article.id}"}>
+        <div class="card-header d-flex align-items-center gap-2 bg-white">
+          <div class="flex-grow-1">
+            <a href={~p"/articles/#{article.id}"} class="fw-semibold text-decoration-none text-dark">
+              <%= article.title %>
+            </a>
+            <br />
+            <time class="small text-muted" datetime={DateTime.to_iso8601(article.inserted_at)}>
+              <%= Calendar.strftime(article.inserted_at, "%B %d, %Y") %>
+            </time>
+          </div>
+          <div class="d-flex align-items-center gap-2">
+            <%= if article.visibility == :pinned do %>
+              <span class="badge text-bg-warning" aria-label="Pinned article"><span aria-hidden="true">📌</span> Pinned</span>
+            <% else %>
+              <%= if article.visibility == :public do %>
+                <span class="badge text-bg-success">Public</span>
+              <% else %>
+                <span class="badge text-bg-secondary">Private</span>
+              <% end %>
+            <% end %>
+            <span class="badge text-bg-light border">
+              <%= length(article.comments) %> <%= if length(article.comments) == 1, do: "comment", else: "comments" %>
+            </span>
+            <%= if @current_member && (@current_member.id == article.author_id or @current_member.is_admin) do %>
+              <a href={~p"/articles/#{article.id}/edit"} class="btn btn-sm btn-outline-secondary">Edit</a>
+            <% end %>
+          </div>
         </div>
-      </div>
-      <div class="card-body">
-        <div class="mb-0 markdown-body"><%= ZipLiner.Markdown.to_html(post.content) %></div>
-      </div>
-    </article>
+        <div class="card-body">
+          <div class="markdown-body blog-preview">
+            <%= ZipLiner.Markdown.to_html(article.body) %>
+          </div>
+          <a href={~p"/articles/#{article.id}"} class="btn btn-link btn-sm p-0 mt-2">Read more →</a>
+        </div>
+      </article>
+    <% end %>
   <% end %>
 </div>

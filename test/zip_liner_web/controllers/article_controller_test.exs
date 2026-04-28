@@ -17,6 +17,13 @@ defmodule ZipLinerWeb.ArticleControllerTest do
       conn = get(conn, ~p"/articles")
       assert html_response(conn, 200) =~ "My Long-Form Article"
     end
+
+    test "shows pinned badge for pinned articles", %{conn: conn, member: member} do
+      BlogFixtures.article_fixture(member.id, %{title: "Featured Post", visibility: "pinned"})
+      conn = get(conn, ~p"/articles")
+      assert html_response(conn, 200) =~ "Featured Post"
+      assert html_response(conn, 200) =~ "Pinned"
+    end
   end
 
   describe "new" do
@@ -52,6 +59,20 @@ defmodule ZipLinerWeb.ArticleControllerTest do
             "title" => "Public Article",
             "body" => "Public body content",
             "visibility" => "public"
+          }
+        })
+
+      assert %{id: id} = redirected_params(conn)
+      assert redirected_to(conn) == ~p"/articles/#{id}"
+    end
+
+    test "creates a pinned article", %{conn: conn} do
+      conn =
+        post(conn, ~p"/articles", %{
+          "article" => %{
+            "title" => "Pinned Article",
+            "body" => "Pinned body content",
+            "visibility" => "pinned"
           }
         })
 
@@ -124,6 +145,13 @@ defmodule ZipLinerWeb.ArticleControllerTest do
       article = BlogFixtures.article_fixture(member.id, %{title: "Open Article", visibility: "public"})
       conn = get(conn, ~p"/articles/#{article.id}")
       assert html_response(conn, 200) =~ "Open Article"
+    end
+
+    test "shows pinned article to unauthenticated visitor", %{conn: conn} do
+      member = AccountsFixtures.member_fixture()
+      article = BlogFixtures.article_fixture(member.id, %{title: "Pinned Article", visibility: "pinned"})
+      conn = get(conn, ~p"/articles/#{article.id}")
+      assert html_response(conn, 200) =~ "Pinned Article"
     end
 
     test "redirects unauthenticated visitor away from private article", %{conn: conn} do

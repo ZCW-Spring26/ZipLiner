@@ -1,25 +1,25 @@
 defmodule ZipLinerWeb.ChannelController do
   use ZipLinerWeb, :controller
 
-  import Ecto.Query, warn: false
-  alias ZipLiner.Social
-  alias ZipLiner.Repo
+  alias ZipLiner.Blog
+  alias ZipLiner.Accounts
 
   def index(conn, _params) do
-    channels = Social.list_channels()
-    render(conn, :index, channels: channels)
+    blog_members = Blog.list_blog_members()
+    render(conn, :index, blog_members: blog_members)
   end
 
-  def show(conn, %{"id" => id}) do
-    channel = Social.get_channel!(id)
+  def show(conn, %{"id" => member_id}) do
+    member = Accounts.get_member!(member_id)
+    current_member = conn.assigns.current_member
 
-    posts =
-      ZipLiner.Social.Post
-      |> where([p], p.channel_id == ^channel.id)
-      |> order_by([p], desc: p.inserted_at)
-      |> preload(:author)
-      |> Repo.all()
+    articles =
+      if current_member.id == member.id do
+        Blog.list_articles_by_author(member.id)
+      else
+        Blog.list_public_and_pinned_articles_by_author(member.id)
+      end
 
-    render(conn, :show, channel: channel, posts: posts)
+    render(conn, :show, member: member, articles: articles)
   end
 end

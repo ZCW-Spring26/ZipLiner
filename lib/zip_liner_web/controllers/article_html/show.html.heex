@@ -34,10 +34,14 @@
           </time>
         </div>
         <div class="d-flex align-items-center gap-2">
-          <%= if @article.visibility == :public do %>
-            <span class="badge text-bg-success">Public</span>
+          <%= if @article.visibility == :pinned do %>
+            <span class="badge text-bg-warning" aria-label="Pinned article"><span aria-hidden="true">📌</span> Pinned</span>
           <% else %>
-            <span class="badge text-bg-secondary">Private</span>
+            <%= if @article.visibility == :public do %>
+              <span class="badge text-bg-success">Public</span>
+            <% else %>
+              <span class="badge text-bg-secondary">Private</span>
+            <% end %>
           <% end %>
           <%= if @current_member && (@current_member.id == @article.author_id or @current_member.is_admin) do %>
             <a href={~p"/articles/#{@article.id}/edit"} class="btn btn-sm btn-outline-secondary">Edit</a>

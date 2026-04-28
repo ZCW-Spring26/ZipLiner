@@ -420,14 +420,16 @@ A comment on a post.
 
 #### `Article` (`blog/article.ex`)
 
-A long-form personal blog post written by a member.
+A long-form personal blog post written by a member. Articles belong to the author's personal blog, accessible via the **Blogs** section (`/channels/:member_id`).
 
 | Field | Type | Notes |
 |---|---|---|
 | `title` | string | Max 200 chars |
 | `body` | string | Markdown-formatted content, max 50 000 chars |
-| `visibility` | enum | `private` (authenticated ZipLiner members only) or `public` (anyone with the link) |
-| `author_id` | FK → Member | |
+| `visibility` | enum | `private` (authenticated ZipLiner members only), `public` (anyone with the link), or `pinned` (publicly visible and featured at the top of the author's blog and the articles index) |
+| `author_id` | FK → Member |  |
+
+The **Blogs** (`/channels`) page lists all members who have written at least one article. Each member's blog page (`/channels/:member_id`) shows their articles in blog order, with pinned articles featured first.
 
 ---
 
