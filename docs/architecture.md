@@ -333,6 +333,7 @@ The central entity representing a ZipCode student, alumni, or staff member.
 | `open_to_opportunities` | boolean | Job-seeking flag |
 | `skills` | string[] | Array of skill tags |
 | `avatar_source` | enum | `github` or `linkedin` |
+| `blog_title` | string | Optional personal blog branding, max 100 chars |
 | `cohort_id` | FK → Cohort | |
 
 ---
@@ -413,6 +414,31 @@ A comment on a post.
 |---|---|---|
 | `content` | string | Max 1 000 chars |
 | `post_id` | FK → Post | |
+| `author_id` | FK → Member | |
+
+---
+
+#### `Article` (`blog/article.ex`)
+
+A long-form personal blog post written by a member.
+
+| Field | Type | Notes |
+|---|---|---|
+| `title` | string | Max 200 chars |
+| `body` | string | Markdown-formatted content, max 50 000 chars |
+| `visibility` | enum | `private` (authenticated ZipLiner members only) or `public` (anyone with the link) |
+| `author_id` | FK → Member | |
+
+---
+
+#### `ArticleComment` (`blog/article_comment.ex`)
+
+A comment left by a member on a long-form article.
+
+| Field | Type | Notes |
+|---|---|---|
+| `body` | string | Markdown-formatted content, max 5 000 chars |
+| `article_id` | FK → Article | |
 | `author_id` | FK → Member | |
 
 ---

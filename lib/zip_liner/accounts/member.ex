@@ -25,6 +25,7 @@ defmodule ZipLiner.Accounts.Member do
     field :theme_preference, Ecto.Enum, values: @theme_preferences, default: :light
     field :skills, {:array, :string}, default: []
     field :avatar_source, Ecto.Enum, values: [:github, :linkedin], default: :github
+    field :blog_title, :string
 
     belongs_to :cohort, ZipLiner.Accounts.Cohort
 
@@ -62,6 +63,7 @@ defmodule ZipLiner.Accounts.Member do
       :theme_preference,
       :skills,
       :avatar_source,
+      :blog_title,
       :cohort_id
     ])
     |> validate_required([:github_id, :github_username, :display_name])
@@ -69,6 +71,7 @@ defmodule ZipLiner.Accounts.Member do
     |> unique_constraint(:github_username)
     |> validate_length(:display_name, max: 100)
     |> validate_length(:bio, max: 280)
+    |> validate_length(:blog_title, max: 100)
     |> validate_url(:linkedin_url)
   end
 

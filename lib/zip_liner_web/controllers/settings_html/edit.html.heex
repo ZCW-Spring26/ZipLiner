@@ -61,6 +61,42 @@
     </div>
   </div>
 
+  <h2 class="h5 fw-semibold col-12 mb-0 mt-3">Blog</h2>
+
+  <div class="col-12">
+    <label for="member_blog_title" class="form-label">Blog Title</label>
+    <input
+      type="text"
+      id="member_blog_title"
+      name="member[blog_title]"
+      value={@member.blog_title}
+      maxlength="100"
+      placeholder="e.g. Thoughts on Elixir and distributed systems"
+      class="form-control"
+    />
+    <div class="form-text">This is the name of your personal blog on ZipLiner — let people know what you write about.</div>
+    <%= if @changeset.errors[:blog_title] do %>
+      <div class="invalid-feedback d-block"><%= elem(@changeset.errors[:blog_title], 0) %></div>
+    <% end %>
+  </div>
+
+  <div class="col-12">
+    <h2 class="h5 fw-semibold mb-3">Theme</h2>
+    <input type="hidden" name="member[theme_preference]" value="light" />
+    <div class="form-check form-switch">
+      <input
+        type="checkbox"
+        id="member_theme_preference"
+        name="member[theme_preference]"
+        value="dark"
+        checked={@member.theme_preference == :dark}
+        class="form-check-input"
+        role="switch"
+      />
+      <label for="member_theme_preference" class="form-check-label">Use dark mode</label>
+    </div>
+  </div>
+
   <div class="col-12">
     <h2 class="h5 fw-semibold mb-3">Theme</h2>
     <input type="hidden" name="member[theme_preference]" value="light" />
