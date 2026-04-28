@@ -1,13 +1,13 @@
 <div class="d-flex justify-content-between align-items-center mb-4">
-  <h1 class="h3 mb-0">Blogs</h1>
+  <h1 class="h3 mb-0">Channels</h1>
   <a href={~p"/articles/new"} class="btn btn-primary">Write a Post</a>
 </div>
 
-<p class="text-muted mb-4">Each member's blog is their personal space for long-form articles and reflections. Pinned and public posts appear on the <a href={~p"/articles"}>Articles</a> page.</p>
+<p class="text-muted mb-4">Each member's channel is their personal space for long-form articles and reflections. Pinned and public posts appear on the <a href={~p"/articles"}>Articles</a> page.</p>
 
 <%= if @blog_members == [] do %>
   <div class="text-center text-muted py-5">
-    <p class="mb-3">No blogs yet. Be the first to write an article!</p>
+    <p class="mb-3">No channels yet. Be the first to write an article!</p>
     <a href={~p"/articles/new"} class="btn btn-outline-primary">Write an Article</a>
   </div>
 <% else %>
@@ -21,7 +21,7 @@
               <%= if member.blog_title do %>
                 <%= member.blog_title %>
               <% else %>
-                <%= member.display_name %>'s Blog
+                <%= member.display_name %>'s Channel
               <% end %>
             </div>
             <div class="small text-muted">by <%= member.display_name %></div>

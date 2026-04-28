@@ -81,14 +81,14 @@
           <%= if @member.blog_title do %>
             <%= @member.blog_title %>
           <% else %>
-            Blog
+            Channel
           <% end %>
         </h2>
         <a href={~p"/channels/#{@member.id}"} class="btn btn-outline-secondary btn-sm">View All Posts</a>
       </div>
 
       <%= if @recent_articles == [] do %>
-        <p class="text-muted small">No blog posts yet.</p>
+        <p class="text-muted small">No channel posts yet.</p>
         <%= if @current_member.id == @member.id do %>
           <a href={~p"/articles/new"} class="btn btn-outline-primary btn-sm">Write your first post</a>
         <% end %>
