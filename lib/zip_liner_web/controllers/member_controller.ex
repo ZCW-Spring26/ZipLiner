@@ -3,6 +3,7 @@ defmodule ZipLinerWeb.MemberController do
 
   alias ZipLiner.Accounts
   alias ZipLiner.Social
+  alias ZipLiner.Blog
 
   def index(conn, params) do
     members =
@@ -20,7 +21,20 @@ defmodule ZipLinerWeb.MemberController do
     current_member = conn.assigns.current_member
     is_connected = Social.connected?(current_member.id, member.id)
     pending = Social.get_pending_connection(current_member.id, member.id)
-    render(conn, :show, member: member, is_connected: is_connected, pending_connection: pending)
+
+    recent_articles =
+      if current_member.id == member.id do
+        Blog.list_articles_by_author(member.id) |> Enum.take(3)
+      else
+        Blog.list_public_and_pinned_articles_by_author(member.id) |> Enum.take(3)
+      end
+
+    render(conn, :show,
+      member: member,
+      is_connected: is_connected,
+      pending_connection: pending,
+      recent_articles: recent_articles
+    )
   end
 
   def edit(conn, %{"id" => id}) do

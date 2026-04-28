@@ -11,7 +11,7 @@ defmodule ZipLinerWeb.ArticleController do
     article = Blog.get_article!(id)
 
     cond do
-      article.visibility == :public ->
+      article.visibility in [:public, :pinned] ->
         comment_changeset = Blog.change_comment(%ZipLiner.Blog.ArticleComment{})
         render(conn, :show, article: article, comment_changeset: comment_changeset)
 

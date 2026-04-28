@@ -2,24 +2,32 @@ defmodule ZipLiner.Blog do
   @moduledoc """
   The Blog context manages long-form personal articles and their comments.
 
-  Articles can be `private` (visible only to authenticated ZipLiner members) or
-  `public` (visible to anyone who has the direct link).
+  Articles can be `private` (visible only to authenticated ZipLiner members),
+  `public` (visible to anyone who has the direct link), or `pinned` (publicly
+  visible and featured at the top of the author's blog and the articles index).
+
+  Each member's personal blog is accessible at `/channels/:member_id`.
+  The `/channels` index lists all members who have written at least one article.
   """
 
   import Ecto.Query, warn: false
   alias ZipLiner.Repo
   alias ZipLiner.Blog.{Article, ArticleComment}
   alias ZipLiner.Accounts
+  alias ZipLiner.Accounts.Member
   alias ZipLiner.Notifications.Notification
 
   # ---------------------------------------------------------------------------
   # Articles
   # ---------------------------------------------------------------------------
 
-  @doc "Returns all articles visible to any authenticated member, newest first."
+  @doc "Returns all articles visible to any authenticated member, pinned first then newest first."
   def list_articles do
     Article
-    |> order_by([a], desc: a.inserted_at)
+    |> order_by([a], [
+      asc: fragment("CASE WHEN ? = 'pinned' THEN 0 ELSE 1 END", a.visibility),
+      desc: a.inserted_at
+    ])
     |> preload([:author, :comments])
     |> Repo.all()
   end
@@ -38,6 +46,30 @@ defmodule ZipLiner.Blog do
     Article
     |> where([a], a.visibility == :public)
     |> order_by([a], desc: a.inserted_at)
+    |> preload([:author, :comments])
+    |> Repo.all()
+  end
+
+  @doc "Returns all members who have written at least one article, along with their article count, ordered by display name."
+  def list_blog_members do
+    from(m in Member,
+      join: a in Article,
+      on: a.author_id == m.id,
+      group_by: m.id,
+      select: {m, count(a.id)},
+      order_by: [asc: m.display_name]
+    )
+    |> Repo.all()
+  end
+
+  @doc "Returns all public and pinned articles by a given author, newest first."
+  def list_public_and_pinned_articles_by_author(author_id) do
+    Article
+    |> where([a], a.author_id == ^author_id and a.visibility in [:public, :pinned])
+    |> order_by([a], [
+      asc: fragment("CASE WHEN ? = 'pinned' THEN 0 ELSE 1 END", a.visibility),
+      desc: a.inserted_at
+    ])
     |> preload([:author, :comments])
     |> Repo.all()
   end

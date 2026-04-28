@@ -2,7 +2,7 @@ defmodule ZipLiner.Blog.Article do
   use Ecto.Schema
   import Ecto.Changeset
 
-  @visibilities ~w(private public)a
+  @visibilities ~w(private public pinned)a
 
   schema "articles" do
     field :title, :string
