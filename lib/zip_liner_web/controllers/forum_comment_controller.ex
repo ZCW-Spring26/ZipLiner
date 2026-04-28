@@ -28,12 +28,12 @@ defmodule ZipLinerWeb.ForumCommentController do
         {:ok, _comment} ->
           conn
           |> put_flash(:info, "Comment updated.")
-          |> redirect(to: ~p"/forums/#{thread_id}#comment-#{comment_id}")
+          |> redirect(to: ~p"/forums/#{thread_id}" <> "#comment-#{comment_id}")
 
         {:error, _changeset} ->
           conn
           |> put_flash(:error, "Could not update comment.")
-          |> redirect(to: ~p"/forums/#{thread_id}#comment-#{comment_id}")
+          |> redirect(to: ~p"/forums/#{thread_id}" <> "#comment-#{comment_id}")
       end
     else
       conn
