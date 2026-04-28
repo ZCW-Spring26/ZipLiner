@@ -1,11 +1,33 @@
 defmodule ZipLinerWeb.Admin.MemberController do
   use ZipLinerWeb, :controller
 
+  plug ZipLinerWeb.Plugs.RequireAdmin
+
   alias ZipLiner.Accounts
+  alias ZipLiner.Accounts.Member
 
   def index(conn, _params) do
     members = Accounts.list_members()
     render(conn, :index, members: members)
+  end
+
+  def new(conn, _params) do
+    changeset = Accounts.change_member(%Member{})
+    cohorts = Accounts.list_cohorts()
+    render(conn, :new, changeset: changeset, cohorts: cohorts)
+  end
+
+  def create(conn, %{"member" => member_params}) do
+    case Accounts.create_member(member_params) do
+      {:ok, member} ->
+        conn
+        |> put_flash(:info, "Member created.")
+        |> redirect(to: ~p"/admin/members/#{member.id}")
+
+      {:error, changeset} ->
+        cohorts = Accounts.list_cohorts()
+        render(conn, :new, changeset: changeset, cohorts: cohorts)
+    end
   end
 
   def show(conn, %{"id" => id}) do

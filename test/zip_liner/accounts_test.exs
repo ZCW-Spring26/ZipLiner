@@ -208,7 +208,7 @@ defmodule ZipLiner.AccountsTest do
       refute Accounts.handle_allowed?("notallowed")
     end
 
-    test "find_or_create_from_github/1 returns :not_whitelisted when handle not allowed" do
+    test "find_or_create_from_github/1 returns :join_requested when handle not on whitelist" do
       {:ok, _} = Accounts.create_allowed_handle(%{handle: "allowedonly"})
 
       github_data = %{
@@ -218,7 +218,7 @@ defmodule ZipLiner.AccountsTest do
         "avatar_url" => "https://avatars.githubusercontent.com/u/999004"
       }
 
-      assert {:error, :not_whitelisted} = Accounts.find_or_create_from_github(github_data)
+      assert {:error, :join_requested} = Accounts.find_or_create_from_github(github_data)
     end
 
     test "find_or_create_from_github/1 succeeds when handle is whitelisted" do
@@ -233,6 +233,139 @@ defmodule ZipLiner.AccountsTest do
 
       assert {:ok, member} = Accounts.find_or_create_from_github(github_data)
       assert member.github_username == "alloweduser"
+    end
+  end
+
+  describe "blacklisted_github_handles" do
+    test "create_blacklisted_handle/1 creates a handle" do
+      assert {:ok, h} = Accounts.create_blacklisted_handle(%{handle: "badactor"})
+      assert h.handle == "badactor"
+    end
+
+    test "create_blacklisted_handle/1 normalises handle to lowercase" do
+      assert {:ok, h} = Accounts.create_blacklisted_handle(%{handle: "BadActor"})
+      assert h.handle == "badactor"
+    end
+
+    test "create_blacklisted_handle/1 requires a handle" do
+      assert {:error, changeset} = Accounts.create_blacklisted_handle(%{})
+      assert %{handle: ["can't be blank"]} = errors_on(changeset)
+    end
+
+    test "list_blacklisted_handles/0 returns all handles ordered by handle" do
+      {:ok, _} = Accounts.create_blacklisted_handle(%{handle: "zebra"})
+      {:ok, _} = Accounts.create_blacklisted_handle(%{handle: "alpha"})
+
+      handles = Accounts.list_blacklisted_handles()
+      handle_strings = Enum.map(handles, & &1.handle)
+      assert handle_strings == Enum.sort(handle_strings)
+    end
+
+    test "delete_blacklisted_handle/1 removes the handle" do
+      {:ok, h} = Accounts.create_blacklisted_handle(%{handle: "todelete"})
+      assert {:ok, _} = Accounts.delete_blacklisted_handle(h)
+      assert Accounts.list_blacklisted_handles() |> Enum.all?(fn e -> e.id != h.id end)
+    end
+
+    test "handle_blacklisted?/1 returns true for blacklisted handle" do
+      {:ok, _} = Accounts.create_blacklisted_handle(%{handle: "badguy"})
+      assert Accounts.handle_blacklisted?("badguy")
+    end
+
+    test "handle_blacklisted?/1 is case-insensitive" do
+      {:ok, _} = Accounts.create_blacklisted_handle(%{handle: "badguy"})
+      assert Accounts.handle_blacklisted?("BadGuy")
+    end
+
+    test "handle_blacklisted?/1 returns false for non-blacklisted handle" do
+      refute Accounts.handle_blacklisted?("normaluser")
+    end
+
+    test "find_or_create_from_github/1 returns :blacklisted for blacklisted handles" do
+      {:ok, _} = Accounts.create_blacklisted_handle(%{handle: "spammer"})
+
+      github_data = %{
+        "id" => 999_010,
+        "login" => "spammer",
+        "name" => "Spammer",
+        "avatar_url" => "https://avatars.githubusercontent.com/u/999010"
+      }
+
+      assert {:error, :blacklisted} = Accounts.find_or_create_from_github(github_data)
+    end
+  end
+
+  describe "join_requests" do
+    test "upsert_join_request/1 creates a pending join request" do
+      attrs = %{
+        github_id: "888001",
+        github_username: "newapplicant",
+        display_name: "New Applicant"
+      }
+
+      {:ok, request} = Accounts.upsert_join_request(attrs)
+      assert request.github_username == "newapplicant"
+      assert request.status == :pending
+    end
+
+    test "upsert_join_request/1 updates an existing request" do
+      attrs = %{github_id: "888002", github_username: "applicant2", display_name: "A"}
+      {:ok, first} = Accounts.upsert_join_request(attrs)
+      {:ok, second} = Accounts.upsert_join_request(%{attrs | display_name: "B"})
+
+      assert first.id == second.id
+      assert second.display_name == "B"
+    end
+
+    test "list_pending_join_requests/0 returns only pending requests" do
+      {:ok, r1} = Accounts.upsert_join_request(%{github_id: "888003", github_username: "u3"})
+      {:ok, r2} = Accounts.upsert_join_request(%{github_id: "888004", github_username: "u4"})
+      Accounts.deny_join_request(r2)
+
+      pending = Accounts.list_pending_join_requests()
+      pending_ids = Enum.map(pending, & &1.id)
+      assert r1.id in pending_ids
+      refute r2.id in pending_ids
+    end
+
+    test "approve_join_request/1 creates a member and marks request approved" do
+      {:ok, request} =
+        Accounts.upsert_join_request(%{
+          github_id: "888005",
+          github_username: "approveduser",
+          display_name: "Approved User"
+        })
+
+      assert {:ok, member} = Accounts.approve_join_request(request)
+      assert member.github_username == "approveduser"
+
+      updated = Accounts.get_join_request!(request.id)
+      assert updated.status == :approved
+    end
+
+    test "deny_join_request/1 marks request denied" do
+      {:ok, request} =
+        Accounts.upsert_join_request(%{
+          github_id: "888006",
+          github_username: "denieduser",
+          display_name: "Denied User"
+        })
+
+      assert {:ok, :ok} = Accounts.deny_join_request(request)
+      updated = Accounts.get_join_request!(request.id)
+      assert updated.status == :denied
+    end
+
+    test "deny_join_request/2 adds to blacklist when blacklist? is true" do
+      {:ok, request} =
+        Accounts.upsert_join_request(%{
+          github_id: "888007",
+          github_username: "blacklisteduser",
+          display_name: "Blacklisted User"
+        })
+
+      assert {:ok, :ok} = Accounts.deny_join_request(request, true)
+      assert Accounts.handle_blacklisted?("blacklisteduser")
     end
   end
 end

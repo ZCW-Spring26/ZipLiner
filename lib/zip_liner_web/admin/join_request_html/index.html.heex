@@ -1,0 +1,158 @@
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h1 class="h3 mb-0">Join Requests</h1>
+  <%= if length(@pending) > 0 do %>
+    <span class="badge text-bg-warning fs-6"><%= length(@pending) %> pending</span>
+  <% end %>
+</div>
+
+<p class="text-muted mb-4">
+  These GitHub users attempted to sign in but are neither on the whitelist nor the blacklist.
+  Approve a request to create their member account; deny to reject them (optionally blacklisting them).
+</p>
+
+<h2 class="h5 mb-3">Pending Requests</h2>
+
+<%= if Enum.empty?(@pending) do %>
+  <div class="alert alert-success mb-4">No pending join requests.</div>
+<% else %>
+  <div class="table-responsive mb-5">
+    <table class="table table-striped table-hover align-middle">
+      <thead class="table-light">
+        <tr>
+          <th>GitHub Handle</th>
+          <th>Display Name</th>
+          <th>Requested</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <%= for request <- @pending do %>
+          <tr>
+            <td>
+              <div class="d-flex align-items-center gap-2">
+                <%= if request.github_avatar_url do %>
+                  <img
+                    src={request.github_avatar_url}
+                    alt={request.github_username}
+                    class="avatar-xs rounded-circle"
+                  />
+                <% end %>
+                <a
+                  href={"https://github.com/#{request.github_username}"}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="text-decoration-none fw-medium"
+                >
+                  @<%= request.github_username %>
+                </a>
+              </div>
+            </td>
+            <td class="text-muted"><%= request.display_name || "–" %></td>
+            <td class="text-muted small"><%= Calendar.strftime(request.inserted_at, "%b %d, %Y") %></td>
+            <td>
+              <%# Approve %>
+              <form
+                method="post"
+                action={~p"/admin/join_requests/#{request.id}/approve"}
+                class="d-inline m-0"
+              >
+                <input type="hidden" name="_csrf_token" value={get_csrf_token()} />
+                <button type="submit" class="btn btn-sm btn-success me-1">Approve</button>
+              </form>
+              <%# Deny only %>
+              <form
+                method="post"
+                action={~p"/admin/join_requests/#{request.id}/deny"}
+                class="d-inline m-0"
+              >
+                <input type="hidden" name="_csrf_token" value={get_csrf_token()} />
+                <input type="hidden" name="blacklist" value="false" />
+                <button
+                  type="submit"
+                  class="btn btn-sm btn-outline-danger me-1"
+                  onclick="return confirm('Deny @<%= request.github_username %>?')"
+                >
+                  Deny
+                </button>
+              </form>
+              <%# Deny + Blacklist %>
+              <form
+                method="post"
+                action={~p"/admin/join_requests/#{request.id}/deny"}
+                class="d-inline m-0"
+              >
+                <input type="hidden" name="_csrf_token" value={get_csrf_token()} />
+                <input type="hidden" name="blacklist" value="true" />
+                <button
+                  type="submit"
+                  class="btn btn-sm btn-danger"
+                  onclick="return confirm('Deny @<%= request.github_username %> and add to blacklist?')"
+                >
+                  Deny &amp; Blacklist
+                </button>
+              </form>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+<% end %>
+
+<h2 class="h5 mb-3">All Requests</h2>
+
+<%= if Enum.empty?(@all) do %>
+  <div class="alert alert-info">No join requests yet.</div>
+<% else %>
+  <div class="table-responsive">
+    <table class="table table-striped table-hover align-middle">
+      <thead class="table-light">
+        <tr>
+          <th>GitHub Handle</th>
+          <th>Display Name</th>
+          <th>Status</th>
+          <th>Date</th>
+        </tr>
+      </thead>
+      <tbody>
+        <%= for request <- @all do %>
+          <tr>
+            <td>
+              <div class="d-flex align-items-center gap-2">
+                <%= if request.github_avatar_url do %>
+                  <img
+                    src={request.github_avatar_url}
+                    alt={request.github_username}
+                    class="avatar-xs rounded-circle"
+                  />
+                <% end %>
+                <a
+                  href={"https://github.com/#{request.github_username}"}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="text-decoration-none"
+                >
+                  @<%= request.github_username %>
+                </a>
+              </div>
+            </td>
+            <td class="text-muted"><%= request.display_name || "–" %></td>
+            <td>
+              <span class={
+                "badge " <>
+                  case request.status do
+                    :pending -> "text-bg-warning"
+                    :approved -> "text-bg-success"
+                    :denied -> "text-bg-danger"
+                  end
+              }>
+                <%= request.status %>
+              </span>
+            </td>
+            <td class="text-muted small"><%= Calendar.strftime(request.inserted_at, "%b %d, %Y") %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+<% end %>

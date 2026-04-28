@@ -1,0 +1,74 @@
+<h1 class="h3 mb-4">Add Member</h1>
+
+<form method="post" action={~p"/admin/members"} class="row g-3" style="max-width: 480px;">
+  <input type="hidden" name="_csrf_token" value={get_csrf_token()} />
+
+  <div class="col-12">
+    <label for="member_github_id" class="form-label">GitHub ID <span class="text-danger">*</span></label>
+    <input
+      type="text"
+      id="member_github_id"
+      name="member[github_id]"
+      value={@changeset.changes[:github_id] || ""}
+      class={"form-control#{if @changeset.errors[:github_id], do: " is-invalid"}"}
+      required
+    />
+    <%= for {msg, _opts} <- Keyword.get_values(@changeset.errors, :github_id) do %>
+      <div class="invalid-feedback"><%= msg %></div>
+    <% end %>
+  </div>
+
+  <div class="col-12">
+    <label for="member_github_username" class="form-label">GitHub Username <span class="text-danger">*</span></label>
+    <input
+      type="text"
+      id="member_github_username"
+      name="member[github_username]"
+      value={@changeset.changes[:github_username] || ""}
+      class={"form-control#{if @changeset.errors[:github_username], do: " is-invalid"}"}
+      required
+    />
+    <%= for {msg, _opts} <- Keyword.get_values(@changeset.errors, :github_username) do %>
+      <div class="invalid-feedback"><%= msg %></div>
+    <% end %>
+  </div>
+
+  <div class="col-12">
+    <label for="member_display_name" class="form-label">Display Name <span class="text-danger">*</span></label>
+    <input
+      type="text"
+      id="member_display_name"
+      name="member[display_name]"
+      value={@changeset.changes[:display_name] || ""}
+      class={"form-control#{if @changeset.errors[:display_name], do: " is-invalid"}"}
+      required
+    />
+    <%= for {msg, _opts} <- Keyword.get_values(@changeset.errors, :display_name) do %>
+      <div class="invalid-feedback"><%= msg %></div>
+    <% end %>
+  </div>
+
+  <div class="col-12">
+    <label for="member_role" class="form-label">Role</label>
+    <select id="member_role" name="member[role]" class="form-select">
+      <%= for role <- ~w(student alumni instructor staff mentor guest) do %>
+        <option value={role}><%= role %></option>
+      <% end %>
+    </select>
+  </div>
+
+  <div class="col-12">
+    <label for="member_cohort_id" class="form-label">Cohort</label>
+    <select id="member_cohort_id" name="member[cohort_id]" class="form-select">
+      <option value="">– No cohort –</option>
+      <%= for cohort <- @cohorts do %>
+        <option value={cohort.id}><%= cohort.name %></option>
+      <% end %>
+    </select>
+  </div>
+
+  <div class="col-12 d-flex gap-2">
+    <button type="submit" class="btn btn-primary">Create Member</button>
+    <a href={~p"/admin/members"} class="btn btn-outline-secondary">Cancel</a>
+  </div>
+</form>

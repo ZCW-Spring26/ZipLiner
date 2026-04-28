@@ -1,0 +1,64 @@
+<h1 class="h3 mb-4">Project: <%= @project.name %></h1>
+
+<dl class="row" style="max-width: 600px;">
+  <dt class="col-sm-3 fw-semibold">Name</dt>
+  <dd class="col-sm-9"><%= @project.name %></dd>
+  <dt class="col-sm-3 fw-semibold">Tagline</dt>
+  <dd class="col-sm-9"><%= @project.tagline || "–" %></dd>
+  <dt class="col-sm-3 fw-semibold">Status</dt>
+  <dd class="col-sm-9"><span class="badge text-bg-secondary"><%= @project.status %></span></dd>
+  <dt class="col-sm-3 fw-semibold">Owner</dt>
+  <dd class="col-sm-9">
+    <%= if @project.owner do %>
+      <a href={~p"/admin/members/#{@project.owner_id}"} class="text-decoration-none">
+        <%= @project.owner.display_name %> (@<%= @project.owner.github_username %>)
+      </a>
+    <% else %>
+      –
+    <% end %>
+  </dd>
+  <dt class="col-sm-3 fw-semibold">Repo URL</dt>
+  <dd class="col-sm-9">
+    <%= if @project.repo_url do %>
+      <a href={@project.repo_url} target="_blank" rel="noopener noreferrer"><%= @project.repo_url %></a>
+    <% else %>
+      –
+    <% end %>
+  </dd>
+  <dt class="col-sm-3 fw-semibold">Demo URL</dt>
+  <dd class="col-sm-9">
+    <%= if @project.demo_url do %>
+      <a href={@project.demo_url} target="_blank" rel="noopener noreferrer"><%= @project.demo_url %></a>
+    <% else %>
+      –
+    <% end %>
+  </dd>
+  <dt class="col-sm-3 fw-semibold">Tech Stack</dt>
+  <dd class="col-sm-9">
+    <%= if @project.tech_stack != [] do %>
+      <%= Enum.join(@project.tech_stack, ", ") %>
+    <% else %>
+      –
+    <% end %>
+  </dd>
+  <dt class="col-sm-3 fw-semibold">Cohort Project</dt>
+  <dd class="col-sm-9"><%= if @project.cohort_project, do: "Yes", else: "No" %></dd>
+  <dt class="col-sm-3 fw-semibold">Created</dt>
+  <dd class="col-sm-9"><%= Calendar.strftime(@project.inserted_at, "%b %d, %Y") %></dd>
+</dl>
+
+<div class="d-flex gap-2">
+  <a href={~p"/admin/projects/#{@project.id}/edit"} class="btn btn-outline-secondary btn-sm">Edit</a>
+  <form method="post" action={~p"/admin/projects/#{@project.id}"} class="d-inline m-0">
+    <input type="hidden" name="_csrf_token" value={get_csrf_token()} />
+    <input type="hidden" name="_method" value="delete" />
+    <button
+      type="submit"
+      onclick="return confirm('Delete this project?')"
+      class="btn btn-sm btn-outline-danger"
+    >
+      Delete
+    </button>
+  </form>
+  <a href={~p"/admin/projects"} class="btn btn-link btn-sm">Back</a>
+</div>

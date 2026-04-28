@@ -1,0 +1,104 @@
+<h1 class="h3 mb-4">Edit Project</h1>
+
+<form method="post" action={~p"/admin/projects/#{@project.id}"} class="row g-3" style="max-width: 560px;">
+  <input type="hidden" name="_csrf_token" value={get_csrf_token()} />
+  <input type="hidden" name="_method" value="put" />
+
+  <div class="col-12">
+    <label for="project_name" class="form-label">Name <span class="text-danger">*</span></label>
+    <input
+      type="text"
+      id="project_name"
+      name="project[name]"
+      value={Ecto.Changeset.get_field(@changeset, :name) || ""}
+      class={"form-control#{if @changeset.errors[:name], do: " is-invalid"}"}
+      required
+    />
+    <%= for {msg, _opts} <- Keyword.get_values(@changeset.errors, :name) do %>
+      <div class="invalid-feedback"><%= msg %></div>
+    <% end %>
+  </div>
+
+  <div class="col-12">
+    <label for="project_tagline" class="form-label">Tagline</label>
+    <input
+      type="text"
+      id="project_tagline"
+      name="project[tagline]"
+      value={Ecto.Changeset.get_field(@changeset, :tagline) || ""}
+      class="form-control"
+    />
+  </div>
+
+  <div class="col-12">
+    <label for="project_description" class="form-label">Description</label>
+    <textarea id="project_description" name="project[description]" class="form-control" rows="4"><%= Ecto.Changeset.get_field(@changeset, :description) || "" %></textarea>
+  </div>
+
+  <div class="col-12">
+    <label for="project_owner_id" class="form-label">Owner <span class="text-danger">*</span></label>
+    <select id="project_owner_id" name="project[owner_id]" class="form-select" required>
+      <option value="">– Select owner –</option>
+      <%= for member <- @members do %>
+        <option value={member.id} selected={@project.owner_id == member.id}>
+          <%= member.display_name %> (@<%= member.github_username %>)
+        </option>
+      <% end %>
+    </select>
+  </div>
+
+  <div class="col-12">
+    <label for="project_status" class="form-label">Status</label>
+    <select id="project_status" name="project[status]" class="form-select">
+      <%= for status <- ~w(in_progress completed archived looking_for_collaborators) do %>
+        <option value={status} selected={to_string(@project.status) == status}><%= status %></option>
+      <% end %>
+    </select>
+  </div>
+
+  <div class="col-12">
+    <label for="project_repo_url" class="form-label">Repo URL</label>
+    <input
+      type="url"
+      id="project_repo_url"
+      name="project[repo_url]"
+      value={Ecto.Changeset.get_field(@changeset, :repo_url) || ""}
+      class={"form-control#{if @changeset.errors[:repo_url], do: " is-invalid"}"}
+    />
+    <%= for {msg, _opts} <- Keyword.get_values(@changeset.errors, :repo_url) do %>
+      <div class="invalid-feedback"><%= msg %></div>
+    <% end %>
+  </div>
+
+  <div class="col-12">
+    <label for="project_demo_url" class="form-label">Demo URL</label>
+    <input
+      type="url"
+      id="project_demo_url"
+      name="project[demo_url]"
+      value={Ecto.Changeset.get_field(@changeset, :demo_url) || ""}
+      class={"form-control#{if @changeset.errors[:demo_url], do: " is-invalid"}"}
+    />
+    <%= for {msg, _opts} <- Keyword.get_values(@changeset.errors, :demo_url) do %>
+      <div class="invalid-feedback"><%= msg %></div>
+    <% end %>
+  </div>
+
+  <div class="col-12 form-check ms-1">
+    <input type="hidden" name="project[cohort_project]" value="false" />
+    <input
+      type="checkbox"
+      id="project_cohort_project"
+      name="project[cohort_project]"
+      value="true"
+      checked={Ecto.Changeset.get_field(@changeset, :cohort_project)}
+      class="form-check-input"
+    />
+    <label for="project_cohort_project" class="form-check-label">Cohort Project</label>
+  </div>
+
+  <div class="col-12 d-flex gap-2">
+    <button type="submit" class="btn btn-primary">Update Project</button>
+    <a href={~p"/admin/projects/#{@project.id}"} class="btn btn-outline-secondary">Cancel</a>
+  </div>
+</form>

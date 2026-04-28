@@ -41,12 +41,21 @@ defmodule ZipLinerWeb.AuthController do
         |> put_flash(:info, "Welcome back, #{member.display_name}!")
         |> redirect(to: ~p"/feed")
 
-      {:error, :not_whitelisted} ->
+      {:error, :blacklisted} ->
         conn
         |> put_flash(
           :error,
-          "Your GitHub account is not authorised to access this site. " <>
-            "Please contact an administrator."
+          "Your GitHub account has been prohibited from joining ZipLiner. " <>
+            "Please contact an administrator if you believe this is a mistake."
+        )
+        |> redirect(to: ~p"/")
+
+      {:error, :join_requested} ->
+        conn
+        |> put_flash(
+          :info,
+          "Your join request has been submitted and is pending administrator review. " <>
+            "You will be able to sign in once your request is approved."
         )
         |> redirect(to: ~p"/")
 
