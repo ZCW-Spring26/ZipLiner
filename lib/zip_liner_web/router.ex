@@ -27,6 +27,7 @@ defmodule ZipLinerWeb.Router do
     pipe_through :browser
 
     get "/", PageController, :home
+    get "/about", AboutController, :show
   end
 
   # ---------------------------------------------------------------------------
