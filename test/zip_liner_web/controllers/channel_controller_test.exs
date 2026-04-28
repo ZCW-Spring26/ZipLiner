@@ -7,9 +7,9 @@ defmodule ZipLinerWeb.ChannelControllerTest do
   describe "index" do
     setup :log_in_member
 
-    test "renders blogs page", %{conn: conn} do
+    test "renders channels page", %{conn: conn} do
       conn = get(conn, ~p"/channels")
-      assert html_response(conn, 200) =~ "Blogs"
+      assert html_response(conn, 200) =~ "Channels"
     end
 
     test "shows members who have written articles", %{conn: conn} do
@@ -27,9 +27,9 @@ defmodule ZipLinerWeb.ChannelControllerTest do
       assert html_response(conn, 200) =~ "My Amazing Blog"
     end
 
-    test "shows empty state when no blogs exist", %{conn: conn} do
+    test "shows empty state when no channels exist", %{conn: conn} do
       conn = get(conn, ~p"/channels")
-      assert html_response(conn, 200) =~ "No blogs yet"
+      assert html_response(conn, 200) =~ "No channels yet"
     end
   end
 
@@ -70,10 +70,10 @@ defmodule ZipLinerWeb.ChannelControllerTest do
       assert html_response(conn, 200) =~ "Code & Coffee"
     end
 
-    test "shows default blog title when member has none", %{conn: conn} do
+    test "shows default channel title when member has none", %{conn: conn} do
       author = AccountsFixtures.member_fixture()
       conn = get(conn, ~p"/channels/#{author.id}")
-      assert html_response(conn, 200) =~ "#{author.display_name}'s Blog"
+      assert html_response(conn, 200) =~ "#{author.display_name}'s Channel"
     end
 
     test "owner sees Write a Post button on their own blog", %{conn: conn, member: member} do

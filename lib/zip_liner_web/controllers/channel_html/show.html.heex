@@ -1,5 +1,5 @@
 <div class="mb-4">
-  <a href={~p"/channels"} class="text-decoration-none text-muted small">← All Blogs</a>
+  <a href={~p"/channels"} class="text-decoration-none text-muted small">← All Channels</a>
 </div>
 
 <div class="d-flex align-items-center gap-3 mb-4 pb-3 border-bottom">
@@ -9,7 +9,7 @@
       <%= if @member.blog_title do %>
         <%= @member.blog_title %>
       <% else %>
-        <%= @member.display_name %>'s Blog
+        <%= @member.display_name %>'s Channel
       <% end %>
     </h1>
     <div class="small text-muted">
