@@ -27,10 +27,6 @@ defmodule ZipLinerWeb.Router do
     pipe_through :browser
 
     get "/", PageController, :home
-
-    # Public article show — visible to anyone for public articles;
-    # private articles redirect unauthenticated visitors to sign-in.
-    get "/articles/:id", ArticleController, :show
   end
 
   # ---------------------------------------------------------------------------
@@ -67,8 +63,10 @@ defmodule ZipLinerWeb.Router do
 
     resources "/channels", ChannelController, only: [:index, :show]
 
-    # :show is intentionally omitted here — it is defined in the public scope above
-    # so that both authenticated and unauthenticated visitors can access it.
+    # :show is intentionally omitted here — it is defined in a separate public scope
+    # below so that both authenticated and unauthenticated visitors can access it.
+    # That scope is placed AFTER this one so that GET /articles/new is matched here
+    # first, not treated as :id = "new".
     # Access control (private vs public visibility) is enforced inside the action.
     resources "/articles", ArticleController, only: [:index, :new, :create, :delete]
     post "/articles/:article_id/comments", ArticleCommentController, :create
@@ -85,6 +83,19 @@ defmodule ZipLinerWeb.Router do
 
     get "/settings", SettingsController, :edit
     put "/settings", SettingsController, :update
+  end
+
+  # ---------------------------------------------------------------------------
+  # Public article show — must be declared AFTER authenticated routes so that
+  # GET /articles/new is matched by the authenticated :new action above and
+  # not caught here as :id = "new".
+  # Private articles redirect unauthenticated visitors to sign-in.
+  # ---------------------------------------------------------------------------
+
+  scope "/", ZipLinerWeb do
+    pipe_through :browser
+
+    get "/articles/:id", ArticleController, :show
   end
 
   # ---------------------------------------------------------------------------
