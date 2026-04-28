@@ -2,6 +2,13 @@
   <a href={~p"/forums"} class="text-decoration-none text-muted small">← Back to Forum</a>
 </div>
 
+<script>
+  function toggleCommentEdit(id) {
+    document.getElementById('edit-form-' + id).classList.toggle('d-none');
+    document.getElementById('comment-body-' + id).classList.toggle('d-none');
+  }
+</script>
+
 <div class="card mb-4">
   <div class="card-header d-flex align-items-center gap-2 bg-white">
     <img src={@thread.author.github_avatar_url} alt={@thread.author.display_name} class="avatar-sm" />
@@ -56,7 +63,7 @@
                   <button
                     type="button"
                     class="btn btn-sm btn-link text-secondary p-0"
-                    onclick={"document.getElementById('edit-form-#{comment.id}').classList.toggle('d-none'); document.getElementById('comment-body-#{comment.id}').classList.toggle('d-none');"}
+                    onclick={"toggleCommentEdit('#{comment.id}')"}
                   >Edit</button>
                   <form method="post" action={~p"/forums/#{@thread.id}/comments/#{comment.id}"} class="d-inline m-0">
                     <input type="hidden" name="_csrf_token" value={get_csrf_token()} />
@@ -90,7 +97,7 @@
                 <button
                   type="button"
                   class="btn btn-sm btn-outline-secondary"
-                  onclick={"document.getElementById('edit-form-#{comment.id}').classList.add('d-none'); document.getElementById('comment-body-#{comment.id}').classList.remove('d-none');"}
+                  onclick={"toggleCommentEdit('#{comment.id}')"}
                 >Cancel</button>
               </div>
             </form>

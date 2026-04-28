@@ -14,7 +14,7 @@
               <span class="fw-medium"><%= member.display_name %></span>
               <%= if meta.last_message_at do %>
                 <% is_sender = meta.last_sender_id == @current_member.id %>
-                <small style={"color: #{if is_sender, do: "#0d6efd", else: "#198754"}; white-space: nowrap; margin-left: 0.5rem;"}>
+                <small class={"#{if is_sender, do: "text-primary", else: "text-success"} text-nowrap ms-2"}>
                   <%= Calendar.strftime(meta.last_message_at, "%b %d, %H:%M") %>
                 </small>
               <% end %>

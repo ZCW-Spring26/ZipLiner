@@ -17,10 +17,7 @@ defmodule ZipLinerWeb.MessageController do
       connection_ids
       |> Enum.map(&Accounts.get_member!/1)
 
-    metadata =
-      Map.new(connection_ids, fn other_id ->
-        {other_id, Social.get_conversation_metadata(member.id, other_id)}
-      end)
+    metadata = Social.get_conversations_metadata(member.id, connection_ids)
 
     render(conn, :index, connected_members: connected_members, metadata: metadata)
   end

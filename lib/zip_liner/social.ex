@@ -251,42 +251,53 @@ defmodule ZipLiner.Social do
   end
 
   @doc """
-  Returns a metadata map for the conversation between `current_member_id` and
-  `other_member_id`:
+  Returns a map of `other_member_id => metadata` for all conversations between
+  `current_member_id` and each id in `other_member_ids`.
 
-    * `:total_count`   – total number of messages in the conversation
-    * `:unread_count`  – messages sent *to* current_member that have no `read_at`
+  Each metadata map contains:
+    * `:total_count`    – total messages in the conversation
+    * `:unread_count`   – messages sent *to* current_member with no `read_at`
     * `:last_message_at` – `inserted_at` of the most-recent message, or `nil`
     * `:last_sender_id`  – `sender_id` of the most-recent message, or `nil`
+
+  Uses a single database query and processes the results in memory to avoid N+1.
   """
-  def get_conversation_metadata(current_member_id, other_member_id) do
-    base_query =
+  def get_conversations_metadata(_current_member_id, []), do: %{}
+
+  def get_conversations_metadata(current_member_id, other_member_ids) do
+    messages =
       DirectMessage
       |> where(
         [dm],
-        (dm.sender_id == ^current_member_id and dm.recipient_id == ^other_member_id) or
-          (dm.sender_id == ^other_member_id and dm.recipient_id == ^current_member_id)
+        (dm.sender_id == ^current_member_id and dm.recipient_id in ^other_member_ids) or
+          (dm.sender_id in ^other_member_ids and dm.recipient_id == ^current_member_id)
       )
+      |> select([dm], %{
+        sender_id: dm.sender_id,
+        recipient_id: dm.recipient_id,
+        inserted_at: dm.inserted_at,
+        read_at: dm.read_at
+      })
+      |> Repo.all()
 
-    total_count = Repo.aggregate(base_query, :count, :id)
+    Map.new(other_member_ids, fn other_id ->
+      conv =
+        Enum.filter(messages, fn m ->
+          (m.sender_id == current_member_id and m.recipient_id == other_id) or
+            (m.sender_id == other_id and m.recipient_id == current_member_id)
+        end)
 
-    unread_count =
-      base_query
-      |> where([dm], dm.recipient_id == ^current_member_id and is_nil(dm.read_at))
-      |> Repo.aggregate(:count, :id)
+      total_count = length(conv)
+      unread_count = Enum.count(conv, &(&1.recipient_id == current_member_id and is_nil(&1.read_at)))
+      last_msg = conv |> Enum.max_by(& &1.inserted_at, fn -> nil end)
 
-    last_message =
-      base_query
-      |> order_by([dm], desc: dm.inserted_at)
-      |> limit(1)
-      |> select([dm], %{inserted_at: dm.inserted_at, sender_id: dm.sender_id})
-      |> Repo.one()
-
-    %{
-      total_count: total_count,
-      unread_count: unread_count,
-      last_message_at: last_message && last_message.inserted_at,
-      last_sender_id: last_message && last_message.sender_id
-    }
+      {other_id,
+       %{
+         total_count: total_count,
+         unread_count: unread_count,
+         last_message_at: last_msg && last_msg.inserted_at,
+         last_sender_id: last_msg && last_msg.sender_id
+       }}
+    end)
   end
 end
