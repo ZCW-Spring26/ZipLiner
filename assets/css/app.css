@@ -75,7 +75,8 @@
 .status-archived             { background-color: #f3f4f6; color: #6b7280; }
 .status-looking_for_collaborators { background-color: #dbeafe; color: #1e40af; }
 
-/* --- Responsive helpers ----------------------------------- */
+/* --- Blog article preview --------------------------------- */
+.blog-preview { max-height: 4em; overflow: hidden; }
 
 /* Channel list: cap description width so long text doesn't overflow the row */
 .channel-description { max-width: 40%; }
