@@ -71,6 +71,18 @@ defmodule ZipLinerWeb.Router do
     resources "/articles", ArticleController, only: [:index, :new, :create, :delete]
     post "/articles/:article_id/comments", ArticleCommentController, :create
     delete "/articles/:article_id/comments/:id", ArticleCommentController, :delete
+
+    resources "/forums", ForumController, only: [:index, :new, :create, :show, :edit, :update, :delete]
+    post "/forums/:forum_id/comments", ForumCommentController, :create
+    patch "/forums/:forum_id/comments/:id", ForumCommentController, :update
+    delete "/forums/:forum_id/comments/:id", ForumCommentController, :delete
+
+    get "/messages", MessageController, :index
+    get "/messages/:member_id", MessageController, :show
+    post "/messages/:member_id", MessageController, :create
+
+    get "/settings", SettingsController, :edit
+    put "/settings", SettingsController, :update
   end
 
   # ---------------------------------------------------------------------------
@@ -84,22 +96,6 @@ defmodule ZipLinerWeb.Router do
     pipe_through :browser
 
     get "/articles/:id", ArticleController, :show
-  end
-
-  scope "/", ZipLinerWeb do
-    pipe_through [:browser, :require_auth]
-
-    resources "/forums", ForumController, only: [:index, :new, :create, :show, :edit, :update, :delete]
-    post "/forums/:forum_id/comments", ForumCommentController, :create
-    patch "/forums/:forum_id/comments/:id", ForumCommentController, :update
-    delete "/forums/:forum_id/comments/:id", ForumCommentController, :delete
-
-    get "/messages", MessageController, :index
-    get "/messages/:member_id", MessageController, :show
-    post "/messages/:member_id", MessageController, :create
-
-    get "/settings", SettingsController, :edit
-    put "/settings", SettingsController, :update
   end
 
   # ---------------------------------------------------------------------------
