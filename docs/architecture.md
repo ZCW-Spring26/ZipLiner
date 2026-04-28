@@ -333,6 +333,7 @@ The central entity representing a ZipCode student, alumni, or staff member.
 | `open_to_opportunities` | boolean | Job-seeking flag |
 | `skills` | string[] | Array of skill tags |
 | `avatar_source` | enum | `github` or `linkedin` |
+| `blog_title` | string | Optional personal blog branding, max 100 chars |
 | `cohort_id` | FK → Cohort | |
 
 ---

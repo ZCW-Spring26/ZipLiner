@@ -18,6 +18,10 @@
             <div class="d-flex align-items-center gap-2 small text-muted">
               <img src={article.author.github_avatar_url} alt={article.author.display_name} class="avatar-xs" />
               <span><%= article.author.display_name %></span>
+              <%= if article.author.blog_title do %>
+                <span>·</span>
+                <span class="fst-italic"><%= article.author.blog_title %></span>
+              <% end %>
               <span>·</span>
               <time datetime={DateTime.to_iso8601(article.inserted_at)}>
                 <%= Calendar.strftime(article.inserted_at, "%b %d, %Y") %>

@@ -17,6 +17,10 @@
           <% else %>
             <span class="fw-semibold"><%= @article.author.display_name %></span>
           <% end %>
+          <%= if @article.author.blog_title do %>
+            <br />
+            <span class="small text-muted fst-italic"><%= @article.author.blog_title %></span>
+          <% end %>
           <br />
           <time class="small text-muted" datetime={DateTime.to_iso8601(@article.inserted_at)}>
             <%= Calendar.strftime(@article.inserted_at, "%B %d, %Y") %>
