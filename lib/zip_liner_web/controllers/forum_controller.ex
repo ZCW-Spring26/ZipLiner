@@ -37,26 +37,20 @@ defmodule ZipLinerWeb.ForumController do
   def edit(conn, %{"id" => id}) do
     thread = Forums.get_thread!(id)
 
-    if thread.author_id != conn.assigns.current_member.id and
-         not conn.assigns.current_member.is_admin do
+    if authorized_for_thread?(conn, thread) do
+      changeset = Forums.change_thread(thread)
+      render(conn, :edit, thread: thread, changeset: changeset)
+    else
       conn
       |> put_flash(:error, "You can only edit your own threads.")
       |> redirect(to: ~p"/forums/#{id}")
-    else
-      changeset = Forums.change_thread(thread)
-      render(conn, :edit, thread: thread, changeset: changeset)
     end
   end
 
   def update(conn, %{"id" => id, "forum_thread" => thread_params}) do
     thread = Forums.get_thread!(id)
 
-    if thread.author_id != conn.assigns.current_member.id and
-         not conn.assigns.current_member.is_admin do
-      conn
-      |> put_flash(:error, "You can only edit your own threads.")
-      |> redirect(to: ~p"/forums/#{id}")
-    else
+    if authorized_for_thread?(conn, thread) do
       case Forums.update_thread(thread, thread_params) do
         {:ok, updated_thread} ->
           conn
@@ -66,23 +60,30 @@ defmodule ZipLinerWeb.ForumController do
         {:error, changeset} ->
           render(conn, :edit, thread: thread, changeset: changeset)
       end
+    else
+      conn
+      |> put_flash(:error, "You can only edit your own threads.")
+      |> redirect(to: ~p"/forums/#{id}")
     end
   end
 
   def delete(conn, %{"id" => id}) do
     thread = Forums.get_thread!(id)
 
-    if thread.author_id != conn.assigns.current_member.id and
-         not conn.assigns.current_member.is_admin do
-      conn
-      |> put_flash(:error, "You can only delete your own threads.")
-      |> redirect(to: ~p"/forums")
-    else
+    if authorized_for_thread?(conn, thread) do
       Forums.delete_thread(thread)
 
       conn
       |> put_flash(:info, "Thread deleted.")
       |> redirect(to: ~p"/forums")
+    else
+      conn
+      |> put_flash(:error, "You can only delete your own threads.")
+      |> redirect(to: ~p"/forums")
     end
+  end
+
+  defp authorized_for_thread?(conn, thread) do
+    conn.assigns.current_member.id == thread.author_id or conn.assigns.current_member.is_admin
   end
 end

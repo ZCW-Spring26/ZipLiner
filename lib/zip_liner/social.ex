@@ -280,16 +280,16 @@ defmodule ZipLiner.Social do
       })
       |> Repo.all()
 
-    Map.new(other_member_ids, fn other_id ->
-      conv =
-        Enum.filter(messages, fn m ->
-          (m.sender_id == current_member_id and m.recipient_id == other_id) or
-            (m.sender_id == other_id and m.recipient_id == current_member_id)
-        end)
+    grouped =
+      Enum.group_by(messages, fn m ->
+        if m.sender_id == current_member_id, do: m.recipient_id, else: m.sender_id
+      end)
 
+    Map.new(other_member_ids, fn other_id ->
+      conv = Map.get(grouped, other_id, [])
       total_count = length(conv)
       unread_count = Enum.count(conv, &(&1.recipient_id == current_member_id and is_nil(&1.read_at)))
-      last_msg = conv |> Enum.max_by(& &1.inserted_at, fn -> nil end)
+      last_msg = Enum.max_by(conv, & &1.inserted_at, fn -> nil end)
 
       {other_id,
        %{

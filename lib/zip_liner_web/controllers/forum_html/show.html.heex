@@ -63,7 +63,8 @@
                   <button
                     type="button"
                     class="btn btn-sm btn-link text-secondary p-0"
-                    onclick={"toggleCommentEdit('#{comment.id}')"}
+                    data-comment-id={comment.id}
+                    onclick="toggleCommentEdit(this.dataset.commentId)"
                   >Edit</button>
                   <form method="post" action={~p"/forums/#{@thread.id}/comments/#{comment.id}"} class="d-inline m-0">
                     <input type="hidden" name="_csrf_token" value={get_csrf_token()} />
@@ -97,7 +98,8 @@
                 <button
                   type="button"
                   class="btn btn-sm btn-outline-secondary"
-                  onclick={"toggleCommentEdit('#{comment.id}')"}
+                  data-comment-id={comment.id}
+                  onclick="toggleCommentEdit(this.dataset.commentId)"
                 >Cancel</button>
               </div>
             </form>

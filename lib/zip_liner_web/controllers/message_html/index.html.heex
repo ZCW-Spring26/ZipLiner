@@ -9,7 +9,7 @@
         <% meta = Map.get(@metadata, member.id, %{total_count: 0, unread_count: 0, last_message_at: nil, last_sender_id: nil}) %>
         <a href={~p"/messages/#{member.id}"} class="list-group-item list-group-item-action d-flex align-items-center gap-3 py-3">
           <img src={member.github_avatar_url} alt={member.display_name} class="avatar-sm flex-shrink-0" />
-          <div class="flex-grow-1 min-width-0">
+          <div class="flex-grow-1 min-w-0">
             <div class="d-flex justify-content-between align-items-baseline">
               <span class="fw-medium"><%= member.display_name %></span>
               <%= if meta.last_message_at do %>
