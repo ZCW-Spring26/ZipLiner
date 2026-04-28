@@ -1,0 +1,152 @@
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-12 col-lg-9">
+
+      <h1 class="display-5 fw-bold mb-2">About ZipLiner</h1>
+      <p class="text-muted mb-5">
+        ZipLiner is the private professional network built exclusively for
+        <strong>ZipCode Wilmington</strong> students and alumni. It brings together community
+        features — social feed, direct messaging, project showcasing, knowledge-sharing
+        articles, threaded forums, and real-time channels — into one focused platform.
+      </p>
+
+      <h2 class="h4 fw-semibold mb-3">How ZipLiner Is Built</h2>
+      <p class="mb-2">
+        ZipLiner is implemented with the following technologies:
+      </p>
+      <ul class="mb-4">
+        <li>
+          <strong>Elixir &amp; Phoenix</strong> — the server-side language and web framework
+          powering all request handling, business logic, and HTML rendering via HEEx templates.
+        </li>
+        <li>
+          <strong>PostgreSQL</strong> — the relational database used for all persistent data,
+          accessed through the Ecto ORM library.
+        </li>
+        <li>
+          <strong>Bootstrap &amp; HTMX</strong> — Bootstrap 5 provides responsive UI components
+          and utility classes; HTMX enables partial-page updates (e.g., posting to the feed)
+          without a full JavaScript framework.
+        </li>
+        <li>
+          <strong>Docker &amp; Docker Compose</strong> — the entire application stack (Phoenix
+          server + PostgreSQL) is containerized so it can be started locally or deployed to any
+          Docker-compatible host with a single <code>docker compose up</code> command.
+        </li>
+        <li>
+          <strong>OAuth 2.0 via GitHub</strong> — authentication is handled through GitHub's
+          OAuth 2.0 flow using the <code>ueberauth_github</code> library. Members sign in with
+          their GitHub account; access is restricted to pre-approved GitHub handles maintained
+          by ZipCode Wilmington administrators.
+        </li>
+      </ul>
+
+      <hr class="my-5" />
+
+      <h2 class="h4 fw-semibold mb-4">App Sections</h2>
+
+      <div class="mb-4">
+        <h3 class="h5 fw-semibold">
+          <a href="/feed" class="text-decoration-none">Feed</a>
+        </h3>
+        <p>
+          The Feed is the home screen for authenticated members. It displays a chronological
+          stream of posts from people you are connected with, including status updates,
+          project showcases, article shares, cohort shoutouts, and job signals. You can
+          react to posts with emoji reactions and reply in threaded comments directly
+          from the feed.
+        </p>
+      </div>
+
+      <div class="mb-4">
+        <h3 class="h5 fw-semibold">
+          <a href="/members" class="text-decoration-none">People</a>
+        </h3>
+        <p>
+          The People directory lists all ZipCode Wilmington members. Browse profiles, discover
+          cohort-mates and alumni, and send connection requests. Each member profile shows
+          their bio, cohort, skills, linked projects, and posts.
+        </p>
+      </div>
+
+      <div class="mb-4">
+        <h3 class="h5 fw-semibold">
+          <a href="/projects" class="text-decoration-none">Projects</a>
+        </h3>
+        <p>
+          Projects is a showcase for work built by members. Each project entry includes a
+          name, tagline, description, tech-stack tags, GitHub repository link, live demo
+          URL, role information, collaborators, and optional screenshots or diagrams. Projects
+          surface in the Feed and in a dedicated browsable gallery.
+        </p>
+      </div>
+
+      <div class="mb-4">
+        <h3 class="h5 fw-semibold">
+          <a href="/messages" class="text-decoration-none">Messages</a>
+        </h3>
+        <p>
+          Messages provides private one-on-one direct messaging between members. Select
+          any member from the conversation list or their profile page to start a thread.
+          All messages are visible only to the two participants.
+        </p>
+      </div>
+
+      <div class="mb-4">
+        <h3 class="h5 fw-semibold">
+          <a href="/channels" class="text-decoration-none">Channels</a>
+        </h3>
+        <p>
+          Channels are topic-focused group spaces (similar to Slack channels). Members can
+          browse available channels and read conversations. Channels are created and managed
+          by administrators and provide a persistent, searchable group-chat experience.
+        </p>
+      </div>
+
+      <div class="mb-4">
+        <h3 class="h5 fw-semibold">
+          <a href="/forums" class="text-decoration-none">Forums</a>
+        </h3>
+        <p>
+          Forums host long-form, threaded discussions on any topic relevant to the community.
+          Any member can start a forum thread; others can reply and continue the conversation.
+          Forums are great for questions, debates, tutorials, and announcements that benefit
+          from a structured comment thread.
+        </p>
+      </div>
+
+      <div class="mb-4">
+        <h3 class="h5 fw-semibold">
+          <a href="/articles" class="text-decoration-none">Articles</a>
+        </h3>
+        <p>
+          Articles is a member-written publication platform. Members can author rich-text
+          posts (supporting Markdown) and publish them publicly or keep them private. Public
+          articles are visible to the world without login and can be commented on by
+          authenticated members.
+        </p>
+      </div>
+
+      <div class="mb-4">
+        <h3 class="h5 fw-semibold">
+          <a href="https://github.com/ZCW-Spring26/ZipLiner/issues" target="_blank" rel="noopener noreferrer" class="text-decoration-none">
+            Report a Bug
+          </a>
+        </h3>
+        <p>
+          Found something broken? Open an issue on the ZipLiner GitHub repository. Please
+          include a clear description of what you expected to happen, what actually happened,
+          and steps to reproduce the problem. Bug reports and feature suggestions from the
+          community are welcome.
+        </p>
+      </div>
+
+      <hr class="my-5" />
+
+      <p class="text-muted small text-center">
+        &copy; ZipCodeWilmington, 2026. All Rights Reserved.
+      </p>
+
+    </div>
+  </div>
+</div>
