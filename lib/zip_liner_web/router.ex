@@ -67,6 +67,9 @@ defmodule ZipLinerWeb.Router do
 
     resources "/channels", ChannelController, only: [:index, :show]
 
+    # :show is intentionally omitted here — it is defined in the public scope above
+    # so that both authenticated and unauthenticated visitors can access it.
+    # Access control (private vs public visibility) is enforced inside the action.
     resources "/articles", ArticleController, only: [:index, :new, :create, :delete]
     post "/articles/:article_id/comments", ArticleCommentController, :create
     delete "/articles/:article_id/comments/:id", ArticleCommentController, :delete
