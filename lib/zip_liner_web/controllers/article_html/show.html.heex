@@ -4,6 +4,13 @@
   <% end %>
 </div>
 
+<script>
+  function toggleCommentEdit(id) {
+    document.getElementById('edit-form-' + id).classList.toggle('d-none');
+    document.getElementById('comment-body-' + id).classList.toggle('d-none');
+  }
+</script>
+
 <div class="row justify-content-center">
   <div class="col-12 col-md-9 col-lg-8">
     <div class="card mb-4">
@@ -33,6 +40,7 @@
             <span class="badge text-bg-secondary">Private</span>
           <% end %>
           <%= if @current_member && (@current_member.id == @article.author_id or @current_member.is_admin) do %>
+            <a href={~p"/articles/#{@article.id}/edit"} class="btn btn-sm btn-outline-secondary">Edit</a>
             <form method="post" action={~p"/articles/#{@article.id}"} class="d-inline m-0">
               <input type="hidden" name="_csrf_token" value={get_csrf_token()} />
               <input type="hidden" name="_method" value="delete" />
@@ -74,17 +82,50 @@
                     <%= Calendar.strftime(comment.inserted_at, "%b %d, %Y") %>
                   </time>
                   <%= if @current_member && (@current_member.id == comment.author_id or @current_member.is_admin) do %>
-                    <form method="post" action={~p"/articles/#{@article.id}/comments/#{comment.id}"} class="d-inline m-0">
-                      <input type="hidden" name="_csrf_token" value={get_csrf_token()} />
-                      <input type="hidden" name="_method" value="delete" />
-                      <button type="submit" class="btn btn-sm btn-link text-danger p-0"
-                        onclick="return confirm('Delete this comment?')">Delete</button>
-                    </form>
+                    <div class="d-flex align-items-center gap-2">
+                      <button
+                        type="button"
+                        class="btn btn-sm btn-link text-secondary p-0"
+                        data-comment-id={comment.id}
+                        onclick="toggleCommentEdit(this.dataset.commentId)"
+                      >Edit</button>
+                      <form method="post" action={~p"/articles/#{@article.id}/comments/#{comment.id}"} class="d-inline m-0">
+                        <input type="hidden" name="_csrf_token" value={get_csrf_token()} />
+                        <input type="hidden" name="_method" value="delete" />
+                        <button type="submit" class="btn btn-sm btn-link text-danger p-0"
+                          onclick="return confirm('Delete this comment?')">Delete</button>
+                      </form>
+                    </div>
                   <% end %>
                 </div>
               </div>
               <div class="card-body py-2">
-                <div class="markdown-body small"><%= ZipLiner.Markdown.to_html(comment.body) %></div>
+                <div id={"comment-body-#{comment.id}"} class="markdown-body small"><%= ZipLiner.Markdown.to_html(comment.body) %></div>
+                <form
+                  id={"edit-form-#{comment.id}"}
+                  class="d-none"
+                  method="post"
+                  action={~p"/articles/#{@article.id}/comments/#{comment.id}"}
+                >
+                  <input type="hidden" name="_csrf_token" value={get_csrf_token()} />
+                  <input type="hidden" name="_method" value="patch" />
+                  <textarea
+                    name="article_comment[body]"
+                    rows="4"
+                    maxlength="5000"
+                    class="form-control form-control-sm mb-2"
+                    required
+                  ><%= comment.body %></textarea>
+                  <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-sm btn-primary">Save</button>
+                    <button
+                      type="button"
+                      class="btn btn-sm btn-outline-secondary"
+                      data-comment-id={comment.id}
+                      onclick="toggleCommentEdit(this.dataset.commentId)"
+                    >Cancel</button>
+                  </div>
+                </form>
               </div>
             </div>
           </div>
@@ -125,3 +166,4 @@
     <% end %>
   </div>
 </div>
+

@@ -1,0 +1,68 @@
+<div class="mb-4">
+  <a href={~p"/articles/#{@article.id}"} class="text-decoration-none text-muted small">← Back to Article</a>
+</div>
+
+<div class="row justify-content-center">
+  <div class="col-12 col-md-8 col-lg-7">
+    <h1 class="h4 fw-bold mb-4">Edit Article</h1>
+
+    <div class="card">
+      <div class="card-body">
+        <form method="post" action={~p"/articles/#{@article.id}"}>
+          <input type="hidden" name="_csrf_token" value={get_csrf_token()} />
+          <input type="hidden" name="_method" value="patch" />
+
+          <div class="mb-3">
+            <label for="article_title" class="form-label fw-semibold">Title</label>
+            <input
+              type="text"
+              id="article_title"
+              name="article[title]"
+              value={@article.title}
+              class={"form-control#{if @changeset.errors[:title], do: " is-invalid", else: ""}"}
+              maxlength="200"
+              placeholder="Give your article a title"
+              required
+            />
+            <%= if msg = @changeset.errors[:title] do %>
+              <div class="invalid-feedback"><%= elem(msg, 0) %></div>
+            <% end %>
+          </div>
+
+          <div class="mb-3">
+            <label for="article_body" class="form-label fw-semibold">Body</label>
+            <p class="small text-muted mb-1">Markdown is supported. Use <code>@username</code> to mention members.</p>
+            <textarea
+              id="article_body"
+              name="article[body]"
+              rows="12"
+              maxlength="50000"
+              class={"form-control#{if @changeset.errors[:body], do: " is-invalid", else: ""}"}
+              placeholder="Write your article…"
+              required
+            ><%= @article.body %></textarea>
+            <%= if msg = @changeset.errors[:body] do %>
+              <div class="invalid-feedback"><%= elem(msg, 0) %></div>
+            <% end %>
+          </div>
+
+          <div class="mb-3">
+            <label for="article_visibility" class="form-label fw-semibold">Visibility</label>
+            <select id="article_visibility" name="article[visibility]" class="form-select">
+              <option value="private" selected={@article.visibility == :private}>Private — visible only to ZipLiner members</option>
+              <option value="public" selected={@article.visibility == :public}>Public — visible to anyone with the link</option>
+            </select>
+            <div class="form-text">
+              Private articles are visible to all authenticated ZipLiner members. Public articles can be shared with anyone.
+            </div>
+          </div>
+
+          <div class="d-flex gap-2">
+            <button type="submit" class="btn btn-primary">Save Changes</button>
+            <a href={~p"/articles/#{@article.id}"} class="btn btn-outline-secondary">Cancel</a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

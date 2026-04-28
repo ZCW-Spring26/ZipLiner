@@ -55,20 +55,57 @@ defmodule ZipLinerWeb.ArticleController do
     end
   end
 
+  def edit(conn, %{"id" => id}) do
+    article = Blog.get_article!(id)
+
+    if authorized_for_article?(conn, article) do
+      changeset = Blog.change_article(article)
+      render(conn, :edit, article: article, changeset: changeset)
+    else
+      conn
+      |> put_flash(:error, "You can only edit your own articles.")
+      |> redirect(to: ~p"/articles/#{id}")
+    end
+  end
+
+  def update(conn, %{"id" => id, "article" => article_params}) do
+    article = Blog.get_article!(id)
+
+    if authorized_for_article?(conn, article) do
+      case Blog.update_article(article, article_params) do
+        {:ok, updated_article} ->
+          conn
+          |> put_flash(:info, "Article updated.")
+          |> redirect(to: ~p"/articles/#{updated_article.id}")
+
+        {:error, changeset} ->
+          render(conn, :edit, article: article, changeset: changeset)
+      end
+    else
+      conn
+      |> put_flash(:error, "You can only edit your own articles.")
+      |> redirect(to: ~p"/articles/#{id}")
+    end
+  end
+
   def delete(conn, %{"id" => id}) do
     article = Blog.get_article!(id)
 
-    if article.author_id != conn.assigns.current_member.id and
-         not conn.assigns.current_member.is_admin do
-      conn
-      |> put_flash(:error, "You can only delete your own articles.")
-      |> redirect(to: ~p"/articles")
-    else
+    if authorized_for_article?(conn, article) do
       Blog.delete_article(article)
 
       conn
       |> put_flash(:info, "Article deleted.")
       |> redirect(to: ~p"/articles")
+    else
+      conn
+      |> put_flash(:error, "You can only delete your own articles.")
+      |> redirect(to: ~p"/articles")
     end
+  end
+
+  defp authorized_for_article?(conn, article) do
+    conn.assigns.current_member.id == article.author_id or
+      conn.assigns.current_member.is_admin
   end
 end
