@@ -70,7 +70,7 @@
                 <button
                   type="submit"
                   class="btn btn-sm btn-outline-danger me-1"
-                  onclick="return confirm('Deny @<%= request.github_username %>?')"
+                  onclick={"return confirm('Deny @#{request.github_username}?')"}
                 >
                   Deny
                 </button>
@@ -86,7 +86,7 @@
                 <button
                   type="submit"
                   class="btn btn-sm btn-danger"
-                  onclick="return confirm('Deny @<%= request.github_username %> and add to blacklist?')"
+                  onclick={"return confirm('Deny @#{request.github_username} and add to blacklist?')"}
                 >
                   Deny &amp; Blacklist
                 </button>
