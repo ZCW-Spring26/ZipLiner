@@ -19,6 +19,10 @@ defmodule ZipLinerWeb.Router do
     plug ZipLinerWeb.Plugs.RequireAuth
   end
 
+  pipeline :require_admin do
+    plug ZipLinerWeb.Plugs.RequireAdmin
+  end
+
   # ---------------------------------------------------------------------------
   # Public routes (no authentication required)
   # ---------------------------------------------------------------------------
@@ -105,7 +109,7 @@ defmodule ZipLinerWeb.Router do
   # ---------------------------------------------------------------------------
 
   scope "/admin", ZipLinerWeb.Admin, as: :admin do
-    pipe_through [:browser, :require_auth]
+    pipe_through [:browser, :require_auth, :require_admin]
 
     resources "/cohorts", CohortController
     resources "/members", MemberController, only: [:index, :new, :create, :show, :edit, :update, :delete]
