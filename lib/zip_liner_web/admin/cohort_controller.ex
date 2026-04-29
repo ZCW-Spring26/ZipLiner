@@ -1,6 +1,8 @@
 defmodule ZipLinerWeb.Admin.CohortController do
   use ZipLinerWeb, :controller
 
+  plug ZipLinerWeb.Plugs.RequireAdmin
+
   alias ZipLiner.Accounts
   alias ZipLiner.Accounts.Cohort
 
