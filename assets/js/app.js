@@ -49,10 +49,8 @@ document.addEventListener("DOMContentLoaded", () => {
   // Fallback dropdown toggle in case Bootstrap JS doesn't initialize correctly.
   // Only activates if Bootstrap's Dropdown API is unavailable.
   if (!window.bootstrap?.Dropdown) {
-    const getDropdownMenu = (toggle) => {
-      const menu = toggle.nextElementSibling;
-      return menu && menu.classList.contains("dropdown-menu") ? menu : null;
-    };
+    const getDropdownMenu = (toggle) =>
+      toggle.parentElement?.querySelector(".dropdown-menu") || null;
 
     const closeAllDropdowns = () => {
       document.querySelectorAll('[data-bs-toggle="dropdown"]').forEach((toggle) => {
@@ -81,7 +79,11 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     document.addEventListener("click", (e) => {
-      if (!e.target.closest(".dropdown-menu") && !e.target.closest('[data-bs-toggle="dropdown"]')) {
+      if (
+        document.querySelector(".dropdown-menu.show") &&
+        !e.target.closest(".dropdown-menu") &&
+        !e.target.closest('[data-bs-toggle="dropdown"]')
+      ) {
         closeAllDropdowns();
       }
     });
