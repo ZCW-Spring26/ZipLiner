@@ -45,6 +45,49 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     });
   }
+
+  // Fallback dropdown toggle in case Bootstrap JS doesn't initialize correctly.
+  // Only activates if Bootstrap's Dropdown API is unavailable.
+  if (!window.bootstrap?.Dropdown) {
+    const getDropdownMenu = (toggle) =>
+      toggle.parentElement?.querySelector(".dropdown-menu") || null;
+
+    const closeAllDropdowns = () => {
+      document.querySelectorAll('[data-bs-toggle="dropdown"]').forEach((toggle) => {
+        const menu = getDropdownMenu(toggle);
+        if (menu) {
+          menu.classList.remove("show");
+          toggle.setAttribute("aria-expanded", "false");
+        }
+      });
+    };
+
+    document.querySelectorAll('[data-bs-toggle="dropdown"]').forEach((toggle) => {
+      toggle.addEventListener("click", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        const menu = getDropdownMenu(toggle);
+        if (menu) {
+          const isOpen = menu.classList.contains("show");
+          closeAllDropdowns();
+          if (!isOpen) {
+            menu.classList.add("show");
+            toggle.setAttribute("aria-expanded", "true");
+          }
+        }
+      });
+    });
+
+    document.addEventListener("click", (e) => {
+      if (
+        document.querySelector(".dropdown-menu.show") &&
+        !e.target.closest(".dropdown-menu") &&
+        !e.target.closest('[data-bs-toggle="dropdown"]')
+      ) {
+        closeAllDropdowns();
+      }
+    });
+  }
 });
 
 // Phoenix LiveSocket (used for LiveDashboard in dev).
