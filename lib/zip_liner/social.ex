@@ -362,14 +362,18 @@ defmodule ZipLiner.Social do
           :ok
 
         member ->
-          %Notification{}
-          |> Notification.changeset(
-            Map.merge(notification_attrs, %{recipient_id: member.id})
-          )
-          |> Repo.insert()
+          case %Notification{}
+               |> Notification.changeset(
+                 Map.merge(notification_attrs, %{recipient_id: member.id})
+               )
+               |> Repo.insert() do
+            {:ok, _notification} ->
+              slack_message = build_slack_message(notification_attrs)
+              Slack.notify(member, slack_message)
 
-          slack_message = build_slack_message(notification_attrs)
-          Slack.notify(member, slack_message)
+            {:error, _changeset} ->
+              :ok
+          end
       end
     end)
   end

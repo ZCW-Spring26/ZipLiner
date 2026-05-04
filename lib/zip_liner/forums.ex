@@ -139,14 +139,18 @@ defmodule ZipLiner.Forums do
           :ok
 
         member ->
-          %Notification{}
-          |> Notification.changeset(
-            Map.merge(notification_attrs, %{recipient_id: member.id})
-          )
-          |> Repo.insert()
+          case %Notification{}
+               |> Notification.changeset(
+                 Map.merge(notification_attrs, %{recipient_id: member.id})
+               )
+               |> Repo.insert() do
+            {:ok, _notification} ->
+              slack_message = build_slack_message(notification_attrs)
+              Slack.notify(member, slack_message)
 
-          slack_message = build_slack_message(notification_attrs)
-          Slack.notify(member, slack_message)
+            {:error, _changeset} ->
+              :ok
+          end
       end
     end)
   end
@@ -162,6 +166,6 @@ defmodule ZipLiner.Forums do
   end
 
   defp build_slack_message(_attrs) do
-    "you were mentioned in ZipLiner"
+    "you were mentioned in ZipLiner."
   end
 end
