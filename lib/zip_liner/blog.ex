@@ -16,6 +16,7 @@ defmodule ZipLiner.Blog do
   alias ZipLiner.Accounts
   alias ZipLiner.Accounts.Member
   alias ZipLiner.Notifications.Notification
+  alias ZipLiner.Notifications.Slack
 
   # ---------------------------------------------------------------------------
   # Articles
@@ -195,9 +196,24 @@ defmodule ZipLiner.Blog do
             Map.merge(notification_attrs, %{recipient_id: member.id})
           )
           |> Repo.insert()
+
+          slack_message = build_slack_message(notification_attrs)
+          Slack.notify(member, slack_message)
       end
     end)
   end
 
   def notify_mentions(_text, _author_id, _attrs), do: :ok
+
+  defp build_slack_message(%{payload: %{"context" => "article", "article_title" => title}}) do
+    "you were mentioned in an article on ZipLiner: \"#{title}\""
+  end
+
+  defp build_slack_message(%{payload: %{"context" => "article_comment", "article_title" => title}}) do
+    "you were mentioned in a comment on the ZipLiner article: \"#{title}\""
+  end
+
+  defp build_slack_message(_attrs) do
+    "you were mentioned in ZipLiner"
+  end
 end

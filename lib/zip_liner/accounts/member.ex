@@ -26,6 +26,7 @@ defmodule ZipLiner.Accounts.Member do
     field :skills, {:array, :string}, default: []
     field :avatar_source, Ecto.Enum, values: [:github, :linkedin], default: :github
     field :blog_title, :string
+    field :slack_handle, :string
 
     belongs_to :cohort, ZipLiner.Accounts.Cohort
 
@@ -64,6 +65,7 @@ defmodule ZipLiner.Accounts.Member do
       :skills,
       :avatar_source,
       :blog_title,
+      :slack_handle,
       :cohort_id
     ])
     |> validate_required([:github_id, :github_username, :display_name])
@@ -73,6 +75,24 @@ defmodule ZipLiner.Accounts.Member do
     |> validate_length(:bio, max: 280)
     |> validate_length(:blog_title, max: 100)
     |> validate_url(:linkedin_url)
+    |> validate_slack_handle()
+  end
+
+  defp validate_slack_handle(changeset) do
+    validate_change(changeset, :slack_handle, fn _, value ->
+      if is_nil(value) or value == "" do
+        []
+      else
+        # Strip leading @ if present before checking format
+        stripped = String.trim_leading(value, "@")
+
+        if Regex.match?(~r/\A[A-Za-z0-9._-]+\z/, stripped) do
+          []
+        else
+          [{:slack_handle, "must contain only letters, numbers, dots, hyphens, and underscores"}]
+        end
+      end
+    end)
   end
 
   defp validate_url(changeset, field) do

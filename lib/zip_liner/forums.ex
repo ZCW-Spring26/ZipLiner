@@ -9,6 +9,7 @@ defmodule ZipLiner.Forums do
   alias ZipLiner.Forums.{ForumThread, ForumComment}
   alias ZipLiner.Accounts
   alias ZipLiner.Notifications.Notification
+  alias ZipLiner.Notifications.Slack
 
   # ---------------------------------------------------------------------------
   # Forum Threads
@@ -143,9 +144,24 @@ defmodule ZipLiner.Forums do
             Map.merge(notification_attrs, %{recipient_id: member.id})
           )
           |> Repo.insert()
+
+          slack_message = build_slack_message(notification_attrs)
+          Slack.notify(member, slack_message)
       end
     end)
   end
 
   def notify_mentions(_text, _author_id, _attrs), do: :ok
+
+  defp build_slack_message(%{payload: %{"context" => "forum_thread", "thread_title" => title}}) do
+    "you were mentioned in a ZipLiner forum thread: \"#{title}\""
+  end
+
+  defp build_slack_message(%{payload: %{"context" => "forum_comment", "thread_title" => title}}) do
+    "you were mentioned in a comment on the ZipLiner forum thread: \"#{title}\""
+  end
+
+  defp build_slack_message(_attrs) do
+    "you were mentioned in ZipLiner"
+  end
 end
