@@ -7,6 +7,9 @@ defmodule ZipLiner.Social do
   import Ecto.Query, warn: false
   alias ZipLiner.Repo
   alias ZipLiner.Social.{Channel, Connection, DirectMessage, Post, Reaction, Reply}
+  alias ZipLiner.Accounts
+  alias ZipLiner.Notifications.Notification
+  alias ZipLiner.Notifications.Slack
 
   # ---------------------------------------------------------------------------
   # Connections
@@ -107,11 +110,21 @@ defmodule ZipLiner.Social do
   @doc "Gets a single post. Raises if not found."
   def get_post!(id), do: Repo.get!(Post, id)
 
-  @doc "Creates a post."
+  @doc "Creates a post and fires mention notifications."
   def create_post(attrs \\ %{}) do
-    %Post{}
-    |> Post.changeset(attrs)
-    |> Repo.insert()
+    result =
+      %Post{}
+      |> Post.changeset(attrs)
+      |> Repo.insert()
+
+    with {:ok, post} <- result do
+      notify_mentions(post.content, post.author_id, %{
+        type: :mention,
+        payload: %{"context" => "feed_post", "post_id" => post.id}
+      })
+
+      {:ok, post}
+    end
   end
 
   @doc "Returns a changeset for a post."
@@ -211,11 +224,21 @@ defmodule ZipLiner.Social do
   # Replies
   # ---------------------------------------------------------------------------
 
-  @doc "Creates a reply on a post."
+  @doc "Creates a reply on a post and fires mention notifications."
   def create_reply(attrs \\ %{}) do
-    %Reply{}
-    |> Reply.changeset(attrs)
-    |> Repo.insert()
+    result =
+      %Reply{}
+      |> Reply.changeset(attrs)
+      |> Repo.insert()
+
+    with {:ok, reply} <- result do
+      notify_mentions(reply.content, reply.author_id, %{
+        type: :mention,
+        payload: %{"context" => "feed_reply", "post_id" => reply.post_id}
+      })
+
+      {:ok, reply}
+    end
   end
 
   @doc "Lists replies for a post."
@@ -231,11 +254,24 @@ defmodule ZipLiner.Social do
   # Direct Messages
   # ---------------------------------------------------------------------------
 
-  @doc "Sends a direct message."
+  @doc "Sends a direct message and notifies the recipient via Slack if they have a handle."
   def send_direct_message(attrs \\ %{}) do
-    %DirectMessage{}
-    |> DirectMessage.changeset(attrs)
-    |> Repo.insert()
+    result =
+      %DirectMessage{}
+      |> DirectMessage.changeset(attrs)
+      |> Repo.insert()
+
+    with {:ok, message} <- result do
+      recipient = Accounts.get_member!(message.recipient_id)
+      sender = Accounts.get_member!(message.sender_id)
+
+      Slack.notify(
+        recipient,
+        "you have a new direct message from #{sender.display_name} in ZipLiner."
+      )
+
+      {:ok, message}
+    end
   end
 
   @doc "Lists direct messages between two members."
@@ -299,5 +335,60 @@ defmodule ZipLiner.Social do
          last_sender_id: last_msg && last_msg.sender_id
        }}
     end)
+  end
+
+  # ---------------------------------------------------------------------------
+  # Mention helpers
+  # ---------------------------------------------------------------------------
+
+  @mention_regex ~r/@([A-Za-z0-9_-]+)/
+
+  @doc """
+  Extracts all @handle mentions from `text`, looks up matching members,
+  and creates a mention notification for each (excluding the author themselves).
+  Also sends a Slack notification if the mentioned member has a slack_handle set.
+  """
+  def notify_mentions(text, author_id, notification_attrs) when is_binary(text) do
+    @mention_regex
+    |> Regex.scan(text, capture: :all_but_first)
+    |> List.flatten()
+    |> Enum.uniq()
+    |> Enum.each(fn handle ->
+      case Accounts.get_member_by_github_username(handle) do
+        nil ->
+          :ok
+
+        member when member.id == author_id ->
+          :ok
+
+        member ->
+          case %Notification{}
+               |> Notification.changeset(
+                 Map.merge(notification_attrs, %{recipient_id: member.id})
+               )
+               |> Repo.insert() do
+            {:ok, _notification} ->
+              slack_message = build_slack_message(notification_attrs)
+              Slack.notify(member, slack_message)
+
+            {:error, _changeset} ->
+              :ok
+          end
+      end
+    end)
+  end
+
+  def notify_mentions(_text, _author_id, _attrs), do: :ok
+
+  defp build_slack_message(%{payload: %{"context" => "feed_post"}}) do
+    "you were mentioned in a ZipLiner feed post."
+  end
+
+  defp build_slack_message(%{payload: %{"context" => "feed_reply"}}) do
+    "you were mentioned in a reply on ZipLiner."
+  end
+
+  defp build_slack_message(_attrs) do
+    "you were mentioned in ZipLiner."
   end
 end

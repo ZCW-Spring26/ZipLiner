@@ -38,4 +38,8 @@ if config_env() == :prod do
 
   config :swoosh, :api_client, Swoosh.ApiClient.Finch
   config :swoosh, :finch_name, ZipLiner.Finch
+
+  if slack_webhook_url = System.get_env("SLACK_WEBHOOK_URL") do
+    config :zip_liner, slack_webhook_url: slack_webhook_url
+  end
 end

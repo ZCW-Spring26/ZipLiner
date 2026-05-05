@@ -59,6 +59,25 @@
     </div>
   </div>
 
+  <div class="col-12">
+    <label for="member_slack_handle" class="form-label">Slack Handle</label>
+    <div class="input-group">
+      <span class="input-group-text">@</span>
+      <input
+        type="text"
+        id="member_slack_handle"
+        name="member[slack_handle]"
+        value={@member.slack_handle}
+        placeholder="your-slack-handle"
+        class={"form-control#{if @changeset.errors[:slack_handle], do: " is-invalid"}"}
+      />
+    </div>
+    <div class="form-text">Add your Slack handle to receive notifications when you're mentioned in ZipLiner.</div>
+    <%= if @changeset.errors[:slack_handle] do %>
+      <div class="invalid-feedback d-block"><%= elem(@changeset.errors[:slack_handle], 0) %></div>
+    <% end %>
+  </div>
+
   <div class="col-12 d-flex gap-2">
     <button type="submit" class="btn btn-primary">Save Changes</button>
     <a href={~p"/members/#{@member.id}"} class="btn btn-outline-secondary">Cancel</a>
