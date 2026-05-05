@@ -11,4 +11,5 @@ if ! /app/bin/zip_liner eval "ZipLiner.Release.migrate()"; then
 fi
 
 echo "Starting ZipLiner..."
+mix ecto.migrate
 exec /app/bin/zip_liner start
