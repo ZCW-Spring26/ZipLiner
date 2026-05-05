@@ -33,6 +33,12 @@
         </a>
       <% end %>
 
+      <%= if @member.slack_handle do %>
+        <p class="small mb-2 text-muted">
+          <span>💬 Slack: @<%= String.trim_leading(@member.slack_handle, "@") %></span>
+        </p>
+      <% end %>
+
       <%= if @member.skills != [] do %>
         <div class="d-flex flex-wrap gap-1 justify-content-center mt-2">
           <%= for skill <- @member.skills do %>
