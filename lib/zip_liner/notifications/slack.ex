@@ -45,6 +45,14 @@ defmodule ZipLiner.Notifications.Slack do
 
   def notify(_member, _message), do: :ok
 
+  @doc """
+  Returns `true` when a Slack webhook URL is configured, `false` otherwise.
+  Useful for displaying webhook status in the UI.
+  """
+  def configured? do
+    webhook_url() != nil
+  end
+
   # ---------------------------------------------------------------------------
   # Private helpers
   # ---------------------------------------------------------------------------

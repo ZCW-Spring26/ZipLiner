@@ -61,6 +61,32 @@
     </div>
   </div>
 
+  <h2 class="h5 fw-semibold col-12 mb-0 mt-3">Notifications</h2>
+
+  <div class="col-12">
+    <label for="member_slack_handle" class="form-label">Slack Handle</label>
+    <input
+      type="text"
+      id="member_slack_handle"
+      name="member[slack_handle]"
+      value={@member.slack_handle}
+      placeholder="e.g. U01234ABCDE or your @username"
+      class="form-control"
+    />
+    <div class="form-text">
+      Enter your Slack handle or member ID to receive mention notifications in Slack.
+      Your member ID (e.g. <code>U01234ABCDE</code>) can be found in Slack under your profile → <em>More</em> → <em>Copy member ID</em>.
+      <%= if @slack_configured do %>
+        <span class="text-success fw-semibold">✓ Slack webhook is active.</span>
+      <% else %>
+        <span class="text-warning fw-semibold">⚠ Slack webhook is not configured — notifications will not be delivered until an administrator sets the <code>SLACK_WEBHOOK_URL</code> environment variable.</span>
+      <% end %>
+    </div>
+    <%= if @changeset.errors[:slack_handle] do %>
+      <div class="invalid-feedback d-block"><%= elem(@changeset.errors[:slack_handle], 0) %></div>
+    <% end %>
+  </div>
+
   <h2 class="h5 fw-semibold col-12 mb-0 mt-3">Channel</h2>
 
   <div class="col-12">
