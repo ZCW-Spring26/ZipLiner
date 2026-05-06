@@ -2,11 +2,12 @@ defmodule ZipLinerWeb.SettingsController do
   use ZipLinerWeb, :controller
 
   alias ZipLiner.Accounts
+  alias ZipLiner.Notifications.Slack
 
   def edit(conn, _params) do
     member = conn.assigns.current_member
     changeset = Accounts.change_member(member)
-    render(conn, :edit, member: member, changeset: changeset)
+    render(conn, :edit, member: member, changeset: changeset, slack_configured: Slack.configured?())
   end
 
   def update(conn, %{"member" => member_params}) do
@@ -19,7 +20,7 @@ defmodule ZipLinerWeb.SettingsController do
         |> redirect(to: ~p"/settings")
 
       {:error, changeset} ->
-        render(conn, :edit, member: member, changeset: changeset)
+        render(conn, :edit, member: member, changeset: changeset, slack_configured: Slack.configured?())
     end
   end
 end
